@@ -1,0 +1,33 @@
+<resources>
+    <!-- InfoScreen -->
+    <string name="app_name">uniLocal_project</string>
+    <string name="image_txtInfoScreen">ImageLogo</string>
+    <string name="txt_infoAboutUs">Un Plataforma que incentiva el comercio y la gastronomia regional,
+    donde buscamos apoyar a los pequeños comerciantes de tu ciudad.</string>
+    <string name="txt_infoLocation">Explora con nuestro mapa interactivo</string>
+    <string name="txt_infoCommentsLikes">Comenta y califica lugares</string>
+    <string name="txt_infoAddPlaces">Agrega nuevos lugares</string>
+    <string name="txt_infoAddFavorites">Guarda tus lugares favoritos</string>
+    <string name="btn_logIn"> Log in </string>
+    <string name="btn_sigIn"> Sig in </string>
+    <!-- End InfoScreen -->
+
+    <!-- LoginFormScreen -->
+    <string name="txt_email"> Email </string>
+    <string name="txt_email_error"> Email is required and must be a valid email </string>
+    <string name="txt_password"> Password </string>
+    <string name="txt_password_error"> Password or email are wrong </string>
+    <!-- End LoginFormScreen -->
+
+    <!-- SigInFormScreen -->
+    <string name="txt_registerName"> Name </string>
+    <string name="txt_registerNameError">The name is wrong</string>
+    <string name="txt_city">City</string>
+    <string name="txt_cityError">The city cant be empty and must be valid</string>
+    <string name="txt_phoneNumber">Phone number</string>
+    <string name="txt_phoneNumberError">The number is wrong</string>
+    <string name="txt_confirmPassword">Confirmar contraseña</string>
+    <string name="txt_confirmPasswordError">The password doesnt match</string>
+    <string name="txt_sigIn">Sig in</string>
+    <!-- End SigInFormScreen -->
+</resources>
