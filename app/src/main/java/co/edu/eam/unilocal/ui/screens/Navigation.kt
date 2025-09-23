@@ -5,7 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import co.edu.eam.unilocal.ui.config.RouteScreen
-import co.edu.eam.unilocal.ui.screens.user.HomeScreen
+import co.edu.eam.unilocal.ui.screens.user.HomeUserScreen
 
 @Composable
 fun Navigation () {
@@ -44,7 +44,7 @@ fun Navigation () {
         }
 
         composable<RouteScreen.Home> {
-            HomeScreen()
+            HomeUserScreen()
         }
 
     }//End NavHost

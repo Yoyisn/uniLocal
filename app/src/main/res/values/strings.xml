@@ -30,4 +30,12 @@
     <string name="txt_confirmPasswordError">The password doesnt match</string>
     <string name="txt_sigIn">Sig in</string>
     <!-- End SigInFormScreen -->
+
+    <!-- HomeUserScreen -->
+    <string name="txt_startTopBar"> User begins top </string>
+    <string name="txt_menuHome"> Home </string>
+    <string name="txt_menuHomeSearch"> Search </string>
+    <string name="txt_menuHomeMyPlaces"> My places </string>
+    <string name="txt_menuHomeProfile">Profile</string>
+    <!-- End HomeUserScreen -->
 </resources>
