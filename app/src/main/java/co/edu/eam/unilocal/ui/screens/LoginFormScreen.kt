@@ -77,7 +77,7 @@ fun LoginFormScreen ( onNavigateToHome: () -> Unit ) {
                     if (email == "teodork789@gmail.com" && password == "12345") {
                         Toast.makeText(context, "Bienvenido", Toast.LENGTH_LONG).show()
                         onNavigateToHome()
-                    } else  {
+                    } else {
                         Toast.makeText(context, "Email or password are wrong", Toast.LENGTH_LONG).show()
                     }
                 },

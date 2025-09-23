@@ -2,6 +2,7 @@ package co.edu.eam.unilocal.ui.screens
 
 import android.util.Log
 import android.util.Patterns
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,6 +31,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -51,6 +53,8 @@ fun SigInFormScreen ( onNavigateToHome: () -> Unit ) {
 
     val countries = listOf("Colombia", "Peru", "Venezuela","Ecuador")
     val cities = listOf("Bogota", "Lima", "Caracas","Quito")
+
+    val context = LocalContext.current
 
     Surface {
         Column (
@@ -116,8 +120,18 @@ fun SigInFormScreen ( onNavigateToHome: () -> Unit ) {
 
             Button (
                 onClick = {
-                    //Log.d("RegisterScreen", "Valores: $country, $city")
-                    onNavigateToHome()
+                    val isValid = registerName.isNotBlank() &&
+                            city.isNotBlank() &&
+                            phoneNumber.length >= 10 &&
+                            email.isNotBlank() && Patterns.EMAIL_ADDRESS.matcher(email).matches() &&
+                            password.length >= 5 &&
+                            confirmPassword == password
+                    if (isValid) {
+                        Toast.makeText(context, "Welcome", Toast.LENGTH_LONG).show()
+                        onNavigateToHome()
+                    } else {
+                        Toast.makeText(context, "Something is wrong in your data, check it", Toast.LENGTH_LONG).show()
+                    }
                 }
             ){
                 Icon (
