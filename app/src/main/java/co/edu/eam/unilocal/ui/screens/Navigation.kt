@@ -5,6 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import co.edu.eam.unilocal.ui.config.RouteScreen
+import co.edu.eam.unilocal.ui.screens.admin.HomeAdminScreen
 import co.edu.eam.unilocal.ui.screens.user.HomeUserScreen
 
 @Composable
@@ -30,7 +31,7 @@ fun Navigation () {
         composable<RouteScreen.LogIn> {
             LoginFormScreen(
                 onNavigateToHome = {
-                    navController.navigate(RouteScreen.Home)
+                    navController.navigate(RouteScreen.HomeUser)
                 }
             )
         }
@@ -38,13 +39,17 @@ fun Navigation () {
         composable<RouteScreen.SigIn> {
             SigInFormScreen(
                 onNavigateToHome = {
-                    navController.navigate(RouteScreen.Home)
+                    navController.navigate(RouteScreen.HomeUser)
                 }
             )
         }
 
-        composable<RouteScreen.Home> {
+        composable<RouteScreen.HomeUser> {
             HomeUserScreen()
+        }
+
+        composable<RouteScreen.HomeAdmin> {
+            HomeAdminScreen()
         }
 
     }//End NavHost

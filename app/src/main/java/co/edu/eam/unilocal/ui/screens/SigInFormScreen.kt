@@ -116,7 +116,7 @@ fun SigInFormScreen ( onNavigateToHome: () -> Unit ) {
 
             Button (
                 onClick = {
-                    Log.d("RegisterScreen", "Valores: $country, $city")
+                    //Log.d("RegisterScreen", "Valores: $country, $city")
                     onNavigateToHome()
                 }
             ){
@@ -130,4 +130,4 @@ fun SigInFormScreen ( onNavigateToHome: () -> Unit ) {
 
         }//End column
     }//End surface
-}
+}//End fun SigInFormScreen
