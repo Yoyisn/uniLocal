@@ -11,7 +11,7 @@ import co.edu.eam.uniLocal_project.R
 import co.edu.eam.unilocal.ui.components.UserCard
 
 @Composable
-fun Profile () {
+fun Profile ( onNavigateToEditProfile: () -> Unit ) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -23,7 +23,7 @@ fun Profile () {
             location = "Armenia - Quindio",
             description = "Todo fresas que la vida es crema",
             imageRes = R.drawable.profile,
-            onEditClick = {  }
+            onEditClick = { onNavigateToEditProfile() }
         )
     }
 }

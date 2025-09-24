@@ -2,7 +2,7 @@ package co.edu.eam.unilocal.ui.screens.user.nav
 
 import kotlinx.serialization.Serializable
 
-sealed class RouteTab{
+sealed class RouteTab {
 
     @Serializable
     data object Map : RouteTab()
@@ -15,5 +15,9 @@ sealed class RouteTab{
 
     @Serializable
     data object Profile : RouteTab()
+
+
+    @Serializable
+    data object EditProfileScreen : RouteTab()
 
 }
