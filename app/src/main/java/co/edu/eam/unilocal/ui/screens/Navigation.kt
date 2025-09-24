@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import co.edu.eam.unilocal.ui.config.RouteScreen
 import co.edu.eam.unilocal.ui.screens.admin.HomeAdminScreen
+import co.edu.eam.unilocal.ui.screens.user.EditUserScreen
 import co.edu.eam.unilocal.ui.screens.user.HomeUserScreen
 
 @Composable
@@ -51,6 +52,12 @@ fun Navigation () {
         composable<RouteScreen.HomeAdmin> {
             HomeAdminScreen()
         }
+
+        /*
+        composable<RouteScreen.EditUserScreen> {
+            EditUserScreen()
+        }
+        */
 
     }//End NavHost
 }

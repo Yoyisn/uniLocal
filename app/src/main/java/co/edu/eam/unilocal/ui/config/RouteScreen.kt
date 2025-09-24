@@ -19,4 +19,7 @@ sealed class RouteScreen {
     @Serializable
     data object HomeAdmin : RouteScreen()
 
+    @Serializable
+    data object EditUserScreen : RouteScreen()
+
 }
