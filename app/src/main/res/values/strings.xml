@@ -38,4 +38,8 @@
     <string name="txt_menuHomeMyPlaces"> My places </string>
     <string name="txt_menuHomeProfile">Profile</string>
     <!-- End HomeUserScreen -->
+
+    <!-- EditUserScreen -->
+    <string name="btn_editUser"> Edit fields </string>
+    <!-- End EditUserScreen -->
 </resources>

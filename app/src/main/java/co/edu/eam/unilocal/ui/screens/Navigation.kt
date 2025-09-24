@@ -16,7 +16,7 @@ fun Navigation () {
 
     NavHost(
         navController = navController,
-        startDestination = RouteScreen.HomeUser//RouteScreen.Info
+        startDestination = RouteScreen.Info
     ){
         composable<RouteScreen.Info> {
             InfoScreen(
@@ -52,12 +52,6 @@ fun Navigation () {
         composable<RouteScreen.HomeAdmin> {
             HomeAdminScreen()
         }
-
-        /*
-        composable<RouteScreen.EditUserScreen> {
-            EditUserScreen()
-        }
-        */
 
     }//End NavHost
 }

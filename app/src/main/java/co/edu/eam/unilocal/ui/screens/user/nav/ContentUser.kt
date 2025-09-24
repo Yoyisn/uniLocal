@@ -34,14 +34,10 @@ fun ContentUser (
             Places()
         }
         composable<RouteTab.Profile> {
-            Profile(
-                onNavigateToEditProfile = { navController.navigate(RouteTab.EditProfileScreen) }
-            )
+            Profile( onNavigateToEditProfile = { navController.navigate(RouteTab.EditProfileScreen) } )
         }
-
         composable<RouteTab.EditProfileScreen> {
-            EditUserScreen(
-            )
+            EditUserScreen()
         }
 
     }
