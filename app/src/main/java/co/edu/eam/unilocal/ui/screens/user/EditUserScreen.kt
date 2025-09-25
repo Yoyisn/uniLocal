@@ -37,13 +37,11 @@ import co.edu.eam.unilocal.ui.components.DropdownMenu
 import co.edu.eam.unilocal.ui.components.InputText
 
 @Composable
-fun EditUserScreen() {
+fun EditUserScreen( onNavigateToEditProfile: () -> Unit ) {
 
     var registerName by rememberSaveable { mutableStateOf("") }
     var phoneNumber by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
-    var password by rememberSaveable { mutableStateOf("") }
-    var confirmPassword by rememberSaveable { mutableStateOf("") }
 
     var country by remember { mutableStateOf("") }
     var city by remember { mutableStateOf("") }
@@ -99,6 +97,7 @@ fun EditUserScreen() {
                             email.isNotBlank() && Patterns.EMAIL_ADDRESS.matcher(email).matches()
                     if (isValid) {
                         Toast.makeText(context, "Edited succesfully", Toast.LENGTH_LONG).show()
+                        onNavigateToEditProfile()
                     } else {
                         Toast.makeText(context, "Something is wrong in your data, check it", Toast.LENGTH_LONG).show()
                     }

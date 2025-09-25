@@ -8,6 +8,7 @@ import co.edu.eam.unilocal.ui.config.RouteScreen
 import co.edu.eam.unilocal.ui.screens.admin.HomeAdminScreen
 import co.edu.eam.unilocal.ui.screens.user.EditUserScreen
 import co.edu.eam.unilocal.ui.screens.user.HomeUserScreen
+import co.edu.eam.unilocal.ui.screens.user.nav.RouteTab
 
 @Composable
 fun Navigation () {

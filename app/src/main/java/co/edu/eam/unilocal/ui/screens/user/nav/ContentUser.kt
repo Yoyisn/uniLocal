@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import co.edu.eam.unilocal.ui.screens.user.AddPlacesScreen
 import co.edu.eam.unilocal.ui.screens.user.EditUserScreen
 import co.edu.eam.unilocal.ui.screens.user.tabs.Map
 import co.edu.eam.unilocal.ui.screens.user.tabs.Places
@@ -37,7 +38,11 @@ fun ContentUser (
             Profile( onNavigateToEditProfile = { navController.navigate(RouteTab.EditProfileScreen) } )
         }
         composable<RouteTab.EditProfileScreen> {
-            EditUserScreen()
+            EditUserScreen( onNavigateToEditProfile = { navController.navigate(RouteTab.Profile) } )
+        }
+
+        composable<RouteTab.AddPlacesScreen> {
+            AddPlacesScreen()
         }
 
     }

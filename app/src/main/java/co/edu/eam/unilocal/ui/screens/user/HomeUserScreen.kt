@@ -34,7 +34,9 @@ fun HomeUserScreen () {
             floatingActionButton = {
                 if(currentScreen?.route == RouteTab.Places::class.qualifiedName) {
                     FloatingActionButton(
-                        onClick = {}
+                        onClick = {
+                            navController.navigate(RouteTab.AddPlacesScreen)
+                        }
                     ) {
                         Icon(
                             imageVector = Icons.Default.Add,
