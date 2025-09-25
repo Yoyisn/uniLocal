@@ -40,6 +40,15 @@
     <!-- End HomeUserScreen -->
 
     <!-- EditUserScreen -->
+    <string name="txt_userName"> User name </string>
     <string name="btn_editUser"> Edit fields </string>
     <!-- End EditUserScreen -->
+
+    <!-- AddPlacesScreen --> -->
+    <string name="txt_titlePlace"> Title </string>
+    <string name="txt_descriptionAddPlaces"> Description </string>">
+    <string name="txt_address"> Address </string>">
+    <string name="txt_phoneNumberPlace"> Phone Number </string>">
+    <string name="btn_addPlace"> Add place </string>">
+    <!-- End AddPlacesScreen -->
 </resources>

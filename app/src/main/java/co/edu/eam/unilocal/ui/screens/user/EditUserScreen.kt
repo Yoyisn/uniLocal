@@ -2,18 +2,15 @@ package co.edu.eam.unilocal.ui.screens.user
 
 import android.util.Patterns
 import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.AccountBox
 import androidx.compose.material.icons.rounded.Call
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Email
-import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.Place
 import androidx.compose.material3.Button
@@ -29,7 +26,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import co.edu.eam.uniLocal_project.R
@@ -42,6 +38,7 @@ fun EditUserScreen( onNavigateToEditProfile: () -> Unit ) {
     var registerName by rememberSaveable { mutableStateOf("") }
     var phoneNumber by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
+    var userName by rememberSaveable { mutableStateOf("") }
 
     var country by remember { mutableStateOf("") }
     var city by remember { mutableStateOf("") }
@@ -66,6 +63,15 @@ fun EditUserScreen( onNavigateToEditProfile: () -> Unit ) {
                 onValueChange = { registerName = it },
                 onValidate = { registerName.isBlank() },
                 icon = Icons.Rounded.Person
+            )//End InputText
+
+            InputText(
+                value = userName,
+                label = stringResource( R.string.txt_userName ),
+                supportingText = stringResource(R.string.txt_registerNameError),
+                onValueChange = { userName = it },
+                onValidate = { userName.isBlank() },
+                icon = Icons.Rounded.AccountBox
             )//End InputText
 
             //DropdownMenu( label = stringResource( R.string.text_country ), list =  countries, onValueChange = {country = it} )

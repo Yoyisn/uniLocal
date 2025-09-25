@@ -42,7 +42,7 @@ fun ContentUser (
         }
 
         composable<RouteTab.AddPlacesScreen> {
-            AddPlacesScreen()
+            AddPlacesScreen( onNavigateToMyPlaces = { navController.navigate(RouteTab.Places) } )
         }
 
     }
