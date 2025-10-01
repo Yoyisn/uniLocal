@@ -30,10 +30,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.res.stringResource
 import co.edu.eam.uniLocal_project.R
 import co.edu.eam.unilocal.ui.components.InputText
+import co.edu.eam.unilocal.viewModel.UsersViewModel
 
 @Composable
-fun LoginFormScreen ( onNavigateToHome: () -> Unit ) {
-
+fun LoginFormScreen (  usersViewModel: UsersViewModel, onNavigateToHome: () -> Unit ) {
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     val context = LocalContext.current
@@ -46,7 +46,6 @@ fun LoginFormScreen ( onNavigateToHome: () -> Unit ) {
                 .fillMaxSize()
                 .padding(50.dp)
         ) {
-
             Image(
                 modifier = Modifier.width(150.dp),
                 painter = painterResource(R.drawable.unilocallogo),
@@ -74,8 +73,10 @@ fun LoginFormScreen ( onNavigateToHome: () -> Unit ) {
 
             Button(
                 onClick = {
-                    if (email == "teodork789@gmail.com" && password == "12345") {
-                        Toast.makeText(context, "Bienvenido", Toast.LENGTH_LONG).show()
+                    val userLogged = usersViewModel.login(email, password)
+
+                    if ( userLogged != null ) {
+                        Toast.makeText(context, "Welcome", Toast.LENGTH_LONG).show()
                         onNavigateToHome()
                     } else {
                         Toast.makeText(context, "Email or password are wrong", Toast.LENGTH_LONG).show()
@@ -91,8 +92,6 @@ fun LoginFormScreen ( onNavigateToHome: () -> Unit ) {
                     Text( text = stringResource( R.string.btn_logIn ) )
                 }
             )//End button
-
         }
     }
-
 }

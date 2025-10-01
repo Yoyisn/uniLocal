@@ -36,12 +36,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import co.edu.eam.uniLocal_project.R
+import co.edu.eam.unilocal.model.Role
+import co.edu.eam.unilocal.model.User
 import co.edu.eam.unilocal.ui.components.DropdownMenu
 import co.edu.eam.unilocal.ui.components.InputText
+import co.edu.eam.unilocal.viewModel.UsersViewModel
+import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
-fun SigInFormScreen ( onNavigateToHome: () -> Unit ) {
+fun SigInFormScreen ( usersViewModel: UsersViewModel , onNavigateToHome: () -> Unit ) {
+
     var registerName by rememberSaveable { mutableStateOf("") }
     var phoneNumber by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
@@ -126,13 +131,24 @@ fun SigInFormScreen ( onNavigateToHome: () -> Unit ) {
                             email.isNotBlank() && Patterns.EMAIL_ADDRESS.matcher(email).matches() &&
                             password.length >= 5 &&
                             confirmPassword == password
+
                     if (isValid) {
-                        Toast.makeText(context, "Welcome", Toast.LENGTH_LONG).show()
+                        val user = User(
+                        id = UUID.randomUUID().toString(),
+                        name = registerName,
+                        city = city,
+                        phoneNumber = phoneNumber,
+                        email = email,
+                        role = Role.USER,
+                        password = password
+                        )
+                        usersViewModel.create(user)
                         onNavigateToHome()
+                        Toast.makeText(context, "Successfully registered", Toast.LENGTH_LONG).show()
                     } else {
                         Toast.makeText(context, "Something is wrong in your data, check it", Toast.LENGTH_LONG).show()
                     }
-                }
+                }//End onClick
             ){
                 Icon (
                     imageVector = Icons.Rounded.Check,
@@ -140,7 +156,7 @@ fun SigInFormScreen ( onNavigateToHome: () -> Unit ) {
                 )
                 Spacer(modifier = Modifier.width(5.dp))
                 Text( text = stringResource( R.string.txt_sigIn ) )
-            }
+            }//End button
 
         }//End column
     }//End surface

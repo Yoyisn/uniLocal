@@ -21,4 +21,7 @@ sealed class RouteTab {
     @Serializable
     data object AddPlacesScreen : RouteTab()
 
+    @Serializable
+    data class PlaceDetail(val id: String) : RouteTab()
+
 }

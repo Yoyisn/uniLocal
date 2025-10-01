@@ -54,6 +54,7 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling:1.6.7")
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.coil.compose)
 
     // Tests
     testImplementation(libs.junit)

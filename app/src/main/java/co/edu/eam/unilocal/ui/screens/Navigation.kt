@@ -1,19 +1,20 @@
 package co.edu.eam.unilocal.ui.screens
 
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import co.edu.eam.unilocal.ui.config.RouteScreen
 import co.edu.eam.unilocal.ui.screens.admin.HomeAdminScreen
-import co.edu.eam.unilocal.ui.screens.user.EditUserScreen
 import co.edu.eam.unilocal.ui.screens.user.HomeUserScreen
-import co.edu.eam.unilocal.ui.screens.user.nav.RouteTab
+import co.edu.eam.unilocal.viewModel.UsersViewModel
 
 @Composable
 fun Navigation () {
 
     val navController = rememberNavController()
+    val usersViewModel: UsersViewModel = viewModel ()
 
     NavHost(
         navController = navController,
@@ -32,6 +33,7 @@ fun Navigation () {
 
         composable<RouteScreen.LogIn> {
             LoginFormScreen(
+                usersViewModel = usersViewModel,
                 onNavigateToHome = {
                     navController.navigate(RouteScreen.HomeUser)
                 }
@@ -40,6 +42,7 @@ fun Navigation () {
 
         composable<RouteScreen.SigIn> {
             SigInFormScreen(
+                usersViewModel = usersViewModel,
                 onNavigateToHome = {
                     navController.navigate(RouteScreen.HomeUser)
                 }
