@@ -29,7 +29,7 @@ fun HomeUserScreen () {
     Surface {
         Scaffold (
             modifier = Modifier.fillMaxSize(),
-            topBar = { TopBarUser() },
+            topBar = { /*TopBarUser()*/ },
             bottomBar = { BottomBarUser( navController = navController ) },
             floatingActionButton = {
                 if(currentScreen?.route == RouteTab.Places::class.qualifiedName) {
