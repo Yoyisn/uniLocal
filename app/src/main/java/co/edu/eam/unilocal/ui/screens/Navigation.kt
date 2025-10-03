@@ -6,7 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import co.edu.eam.unilocal.ui.config.RouteScreen
-import co.edu.eam.unilocal.ui.screens.admin.HomeAdminScreen
+import co.edu.eam.unilocal.ui.admin.HomeAdminScreen
 import co.edu.eam.unilocal.ui.screens.user.HomeUserScreen
 import co.edu.eam.unilocal.viewModel.UsersViewModel
 
