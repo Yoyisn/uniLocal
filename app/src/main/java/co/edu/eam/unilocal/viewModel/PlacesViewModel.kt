@@ -106,7 +106,7 @@ class PlacesViewModel: ViewModel () {
     }
 
     fun findByName ( name: String) : List<Place> {
-        return _places.value.filter { it.title.contains(name) }
+        return _places.value.filter { it.title.contains(other = name, ignoreCase = true) }
     }
 
 }

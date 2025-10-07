@@ -1,4 +1,4 @@
-package co.edu.eam.unilocal.ui.screens.user.tabs
+package co.edu.eam.unilocal.ui.user.screens
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable

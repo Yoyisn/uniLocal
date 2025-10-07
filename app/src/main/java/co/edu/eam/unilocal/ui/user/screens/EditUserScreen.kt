@@ -1,4 +1,4 @@
-package co.edu.eam.unilocal.ui.screens.user
+package co.edu.eam.unilocal.ui.user.screens
 
 import android.util.Patterns
 import android.widget.Toast

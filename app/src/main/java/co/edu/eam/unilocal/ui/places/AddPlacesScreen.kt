@@ -1,6 +1,7 @@
 package co.edu.eam.unilocal.ui.places
 
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +27,7 @@ import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.Phone
 import androidx.compose.material.icons.rounded.Place
 import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -51,7 +53,8 @@ import co.edu.eam.unilocal.ui.components.InputText
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddPlacesScreen(onNavigateToMyPlaces: () -> Unit) {
+fun AddPlacesScreen( onNavigateBackTo: () -> Unit, onNavigateToMyPlaces: () -> Unit ) {
+
     var title by rememberSaveable { mutableStateOf("") }
     var description by rememberSaveable { mutableStateOf("") }
     var address by rememberSaveable { mutableStateOf("") }
@@ -59,18 +62,25 @@ fun AddPlacesScreen(onNavigateToMyPlaces: () -> Unit) {
     var city by remember { mutableStateOf("") }
     var category by remember { mutableStateOf("") }
     var imageSelected by remember { mutableStateOf(false) }
-
     val cities = listOf("Bogotá", "Lima", "Caracas", "Quito", "Armenia")
     val categories = listOf("Restaurante", "Hotel", "Museo", "Parque")
 
     val context = LocalContext.current
+
+    var showExitDialog by remember { mutableStateOf(false) }
+
+    BackHandler (
+        enabled = !showExitDialog
+    ){
+        showExitDialog = true
+    }
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Create Place") },
                 navigationIcon = {
-                    IconButton(onClick = { onNavigateToMyPlaces() }) {
+                    IconButton(onClick = { showExitDialog = true }) {
                         Icon(
                             imageVector = Icons.Rounded.ArrowBack,
                             contentDescription = "Volver"
@@ -109,7 +119,6 @@ fun AddPlacesScreen(onNavigateToMyPlaces: () -> Unit) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Descripción multilinea
             InputText(
                 value = description,
                 label = "Descripción",
@@ -122,7 +131,6 @@ fun AddPlacesScreen(onNavigateToMyPlaces: () -> Unit) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Dropdown de ciudad
             DropdownMenu(
                 supportingText = "Seleccione una ciudad",
                 icon = Icons.Rounded.Place,
@@ -133,7 +141,6 @@ fun AddPlacesScreen(onNavigateToMyPlaces: () -> Unit) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Dirección
             InputText(
                 value = address,
                 label = "Dirección",
@@ -145,7 +152,6 @@ fun AddPlacesScreen(onNavigateToMyPlaces: () -> Unit) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Dropdown de categoría
             DropdownMenu(
                 supportingText = "Seleccione una categoría",
                 icon = Icons.Rounded.Menu,
@@ -156,7 +162,6 @@ fun AddPlacesScreen(onNavigateToMyPlaces: () -> Unit) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Número de teléfono
             InputText(
                 value = phone,
                 label = "Número de teléfono",
@@ -168,7 +173,6 @@ fun AddPlacesScreen(onNavigateToMyPlaces: () -> Unit) {
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Sección de imágenes
             Text(
                 text = " ---------------------------- Images --------------------------",
                 style = MaterialTheme.typography.bodyLarge,
@@ -188,7 +192,6 @@ fun AddPlacesScreen(onNavigateToMyPlaces: () -> Unit) {
                     )
                     .clickable {
                         imageSelected = !imageSelected
-                        // Aquí puedes abrir galería o cámara
                     },
                 contentAlignment = Alignment.Center
             ) {
@@ -201,7 +204,6 @@ fun AddPlacesScreen(onNavigateToMyPlaces: () -> Unit) {
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Botón de agregar lugar
             Button(
                 onClick = {
                     val isValid = title.isNotBlank() &&
@@ -220,7 +222,7 @@ fun AddPlacesScreen(onNavigateToMyPlaces: () -> Unit) {
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 32.dp), // Espacio final para evitar que el botón quede cortado
+                    .padding(bottom = 32.dp),
                 shape = RoundedCornerShape(15.dp)
             ) {
                 Icon(
@@ -231,5 +233,31 @@ fun AddPlacesScreen(onNavigateToMyPlaces: () -> Unit) {
                 Text(text = "Agregar lugar")
             }
         }
-    }
-}
+    }//End Scaffold
+
+    if(showExitDialog) {
+        AlertDialog(
+            title = { Text( text = "Do you want to leave?" ) },
+            text = { Text( text = "If you leave will lose all changes") },
+            onDismissRequest = { showExitDialog = false },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showExitDialog = false
+                        onNavigateBackTo()
+                    }
+                ) {
+                    Text(text = "Sure")
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = { showExitDialog = false }
+                ) {
+                    Text(text = "Close")
+                }
+            }
+        )
+    }//End if
+
+}//End fun AddPlacesScreen

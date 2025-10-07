@@ -22,27 +22,33 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import co.edu.eam.unilocal.model.Place
-import co.edu.eam.unilocal.viewModel.PlacesViewModel
+import co.edu.eam.unilocal.ui.navigation.LocalMainViewModel
+import co.edu.eam.unilocal.viewModel.MainViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PlaceDetail(
     id: String,
-    padding: PaddingValues,
-    placesViewModel: PlacesViewModel,
-    onNavigateToMyPlaces: () -> Unit
+    //padding: PaddingValues,
+    //placesViewModel: PlacesViewModel,
+    onNavigateBackTo: () -> Unit,
+    navController: NavHostController
 ) {
+    //val place: Place? = placesViewModel.findById(id)
+    val placesViewModel = LocalMainViewModel.current.placesViewModel
     val place: Place? = placesViewModel.findById(id)
+    val images = place?.images ?: emptyList()
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Place Detail") },
                 navigationIcon = {
-                    IconButton(onClick = { onNavigateToMyPlaces() }) {
+                    IconButton(onClick = { onNavigateBackTo() }) {
                         Icon(
                             imageVector = Icons.Rounded.ArrowBack,
                             contentDescription = "Volver"
@@ -69,7 +75,7 @@ fun PlaceDetail(
                             .padding(8.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        items(place.images) { image ->
+                        items(images) { image ->
                             AsyncImage(
                                 model = image,
                                 contentDescription = place.title,
@@ -165,23 +171,6 @@ fun PlaceDetail(
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
-                    /*
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
-                        shape = RoundedCornerShape(16.dp),
-                        elevation = CardDefaults.cardElevation(4.dp)
-                    ) {
-                        Column(
-                            modifier = Modifier.padding(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(12.dp)
-                        ) {
-                            Text("Descripción", style = MaterialTheme.typography.titleMedium)
-                            Text(place.description)
-                        }
-                    }
-                    */
 
                     Spacer(modifier = Modifier.height(80.dp))
                 }

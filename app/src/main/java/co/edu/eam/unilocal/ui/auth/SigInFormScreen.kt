@@ -1,6 +1,5 @@
-package co.edu.eam.unilocal.ui.screens
+package co.edu.eam.unilocal.ui.auth
 
-import android.util.Log
 import android.util.Patterns
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -40,12 +39,14 @@ import co.edu.eam.unilocal.model.Role
 import co.edu.eam.unilocal.model.User
 import co.edu.eam.unilocal.ui.components.DropdownMenu
 import co.edu.eam.unilocal.ui.components.InputText
-import co.edu.eam.unilocal.viewModel.UsersViewModel
+import co.edu.eam.unilocal.ui.navigation.LocalMainViewModel
 import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
-fun SigInFormScreen ( usersViewModel: UsersViewModel , onNavigateToHome: () -> Unit ) {
+fun SigInFormScreen ( onNavigateToHome: () -> Unit ) {
+
+    val usersViewModel = LocalMainViewModel.current.usersViewModel
 
     var registerName by rememberSaveable { mutableStateOf("") }
     var phoneNumber by rememberSaveable { mutableStateOf("") }

@@ -1,4 +1,4 @@
-package co.edu.eam.unilocal.ui.screens
+package co.edu.eam.unilocal.ui.auth
 
 import android.util.Patterns
 import android.widget.Toast
@@ -29,11 +29,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.res.stringResource
 import co.edu.eam.uniLocal_project.R
+import co.edu.eam.unilocal.model.Role
 import co.edu.eam.unilocal.ui.components.InputText
-import co.edu.eam.unilocal.viewModel.UsersViewModel
+import co.edu.eam.unilocal.ui.navigation.LocalMainViewModel
 
 @Composable
-fun LoginFormScreen (  usersViewModel: UsersViewModel, onNavigateToHome: () -> Unit ) {
+fun LoginFormScreen ( onNavigateToHome: (String, Role) -> Unit ) {
+
+    val usersViewModel = LocalMainViewModel.current.usersViewModel
+
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     val context = LocalContext.current
@@ -76,8 +80,8 @@ fun LoginFormScreen (  usersViewModel: UsersViewModel, onNavigateToHome: () -> U
                     val userLogged = usersViewModel.login(email, password)
 
                     if ( userLogged != null ) {
+                        onNavigateToHome(userLogged.id, userLogged.role)
                         Toast.makeText(context, "Welcome", Toast.LENGTH_LONG).show()
-                        onNavigateToHome()
                     } else {
                         Toast.makeText(context, "Email or password are wrong", Toast.LENGTH_LONG).show()
                     }

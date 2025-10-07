@@ -1,5 +1,6 @@
-package co.edu.eam.unilocal.ui.config
+package co.edu.eam.unilocal.ui.navigation
 
+import co.edu.eam.unilocal.ui.user.nav.UserScreen
 import kotlinx.serialization.Serializable
 
 sealed class RouteScreen {
@@ -20,6 +21,9 @@ sealed class RouteScreen {
     data object HomeAdmin : RouteScreen()
 
     @Serializable
-    data object EditUserScreen : RouteScreen()
+    data object AddPlacesScreen : RouteScreen()
+
+    @Serializable
+    data class PlaceDetail(val id: String) : RouteScreen()
 
 }
