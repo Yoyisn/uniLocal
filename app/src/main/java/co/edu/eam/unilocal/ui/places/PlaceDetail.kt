@@ -13,35 +13,51 @@ import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.rounded.AccountBox
 import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Menu
+import androidx.compose.material.icons.rounded.Person
+import androidx.compose.material.icons.rounded.Send
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import co.edu.eam.unilocal.model.Place
+import co.edu.eam.unilocal.model.Review
+import co.edu.eam.unilocal.ui.components.InputText
 import co.edu.eam.unilocal.ui.navigation.LocalMainViewModel
-import co.edu.eam.unilocal.viewModel.MainViewModel
+import java.time.LocalDateTime
+import java.util.UUID
 
-@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlaceDetail(
-    id: String,
-    //padding: PaddingValues,
-    //placesViewModel: PlacesViewModel,
     onNavigateBackTo: () -> Unit,
-    navController: NavHostController
+    userId: String?,
+    placeId: String,
 ) {
-    //val place: Place? = placesViewModel.findById(id)
     val placesViewModel = LocalMainViewModel.current.placesViewModel
-    val place: Place? = placesViewModel.findById(id)
+    val reviewsViewModel = LocalMainViewModel.current.reviewsViewModel
+
+    val place: Place? = placesViewModel.findById(placeId)
     val images = place?.images ?: emptyList()
+
+    val reviews = remember { mutableStateListOf<Review>() }
+    reviews.addAll( reviewsViewModel.getReviewsByPlace(placeId) )
+
+    val sheetState = rememberModalBottomSheetState( skipPartiallyExpanded = true )
+    var showComments by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -55,14 +71,24 @@ fun PlaceDetail(
                         )
                     }
                 }
-            )
+            )//End TopAppBar
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { showComments = true }
+            ){
+                Icon(
+                    imageVector = Icons.Rounded.Menu,
+                    contentDescription = null
+                )
+            }
         }
-    ) { innerPadding ->
+    ) { padding ->
 
         place?.let {
             LazyColumn(
                 modifier = Modifier
-                    .padding(innerPadding)
+                    .padding(padding)
                     .fillMaxSize()
                     .background(Color(0xFFF9F9F9)),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -172,18 +198,97 @@ fun PlaceDetail(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    Spacer(modifier = Modifier.height(80.dp))
                 }
             }
-        } ?: run {
-            Box(
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text("Lugar no encontrado")
+
+            if(showComments){
+                ModalBottomSheet(
+                    sheetState = sheetState,
+                    onDismissRequest = { showComments = false }
+                ){
+                    Column (
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(5.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text ( text = "Comments" )
+                        CommentsList( reviews = reviews )
+                        CreateCommentForm(
+                            placeId = placeId,
+                            userId = userId,
+                            onCreateReview = {
+                                reviews.add( it )
+                                reviewsViewModel.create( it )
+                            }
+                        )
+                    }//End Column
+                }//End ModalBottomSheet
+            }//End if
+        }//End place?.let
+    }
+}//End body fun PlaceDetail
+
+@Composable
+fun CommentsList (
+    reviews: List<Review>
+) {
+    LazyColumn {
+        items(reviews) {
+            ListItem(
+                headlineContent = { Text(it.username) },
+                supportingContent = { Text(it.comment) },
+                leadingContent = {
+                    Icon(
+                        imageVector = Icons.Rounded.AccountBox,
+                        contentDescription = null
+                    )
+                },
+            )
+        }
+    }//End LazyColumn
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun CreateCommentForm ( userId: String?, placeId: String, onCreateReview: (Review) -> Unit ) {
+
+    var comment by remember { mutableStateOf("") }
+
+    Row (
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ){
+        OutlinedTextField(
+            value = comment,
+            onValueChange = { comment = it },
+            modifier = Modifier.weight(1f),
+            placeholder = { Text( text = "Write a comment" ) }
+        )
+        IconButton(
+            onClick = {
+                val review = Review(
+                    id = UUID.randomUUID().toString(),
+                    userID = userId ?: "",
+                    username = "Carlitos",
+                    placeID = placeId,
+                    rating = 5,
+                    comment = comment,
+                    date = LocalDateTime.now()
+                )
+
+                if( comment.isEmpty() ) { return@IconButton }
+
+                onCreateReview( review )
+                comment = ""
             }
+        ) {
+            Icon(
+                imageVector = Icons.Rounded.Send,
+                contentDescription = null
+            )
         }
     }
 }

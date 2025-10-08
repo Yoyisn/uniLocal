@@ -101,7 +101,8 @@ fun Navigation (
 
             composable<RouteScreen.AddPlacesScreen> {
                 AddPlacesScreen(
-                    onNavigateToMyPlaces = { navController.navigate(UserScreen.Places) },
+                    userId = user["userId"],
+                    //onNavigateToMyPlaces = { navController.navigate(UserScreen.Places) },
                     onNavigateBackTo = { navController.popBackStack() }
                 )
             }
@@ -109,9 +110,11 @@ fun Navigation (
             composable<RouteScreen.PlaceDetail> {
                 val args = it.toRoute<RouteScreen.PlaceDetail>()
                 PlaceDetail(
-                    id = args.id,
-                    navController = navController,
-                    onNavigateBackTo = { navController.popBackStack() }
+                    placeId = args.id,
+                    userId = user["userId"],
+                    //navController = navController,
+                    onNavigateBackTo = { navController.popBackStack() },
+
                 )
             }
 

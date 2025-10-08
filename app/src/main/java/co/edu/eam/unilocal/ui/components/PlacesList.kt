@@ -21,22 +21,14 @@ fun PlacesList (
     places: List<Place>
 ) {
 
-    Scaffold/*(
-        topBar = {
-            TopAppBar(
-                title = { Text("My places") }
+    LazyColumn(
+        contentPadding = padding
+    ){
+        items(places) { place ->
+            PlaceCard(
+                place = place,
+                onClick = { onNavigateToPlaceDetail(place.id) }
             )
-        }
-    )*/ { padding ->
-        LazyColumn(
-            modifier = Modifier.padding(padding),
-        ){
-            items(places) { place ->
-                PlaceCard(
-                    place = place,
-                    onClick = { onNavigateToPlaceDetail(place.id) }
-                )
-            }
         }
     }
 

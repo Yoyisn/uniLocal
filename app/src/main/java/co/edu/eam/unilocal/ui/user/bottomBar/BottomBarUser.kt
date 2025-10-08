@@ -34,9 +34,10 @@ fun BottomBarUser (
 
     LaunchedEffect(currentDestination){
         val destination = Destination.entries.find{ it.route::class.qualifiedName == currentDestination?.route }
-        if(destination == null) {
-            //showTopBar(destination.showTopBar)
-            //showFAB(destination.showFAB)
+        if(destination != null) {
+            showTopBar(destination.showTopBar)
+            showFAB(destination.showFAB)
+            titleTopBar(destination.label)
         }
     }
 
@@ -51,10 +52,6 @@ fun BottomBarUser (
                     navController.navigate(destination.route){
                         launchSingleTop = true
                         restoreState = true
-
-                        showTopBar(destination.showTopBar)
-                        showFAB(destination.showFAB)
-                        titleTopBar(destination.label)
                     }
                 },
                 icon = {
@@ -78,6 +75,6 @@ enum class Destination (
 ){
     HOME( UserScreen.Map, R.string.txt_menuHome, Icons.Rounded.Home, showTopBar = true ),
     SEARCH( UserScreen.Search, R.string.txt_menuHomeSearch, Icons.Rounded.Search, showTopBar = false ),
-    MY_PLACES( UserScreen.Places, R.string.txt_menuHomeMyPlaces, Icons.Rounded.Place, showTopBar = true ),
+    MY_PLACES( UserScreen.Places, R.string.txt_menuHomeMyPlaces, Icons.Rounded.Place, showFAB = true, showTopBar = true ),
     PROFILE( UserScreen.Profile, R.string.txt_menuHomeProfile, Icons.Rounded.AccountBox, showTopBar = true )
 }

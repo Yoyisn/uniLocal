@@ -40,7 +40,8 @@ class PlacesViewModel: ViewModel () {
                     Schedule(DayOfWeek.MONDAY, open = LocalTime.of(10, 0), close = LocalTime.of( 20, 0)),
                     Schedule(DayOfWeek.THURSDAY, open = LocalTime.of(10, 0), close = LocalTime.of(20,0)),
                     Schedule(DayOfWeek.FRIDAY, open = LocalTime.of(10, 0), close = LocalTime.of(20, 0))
-                )
+                ),
+                ownerId = "3"
             ),
             Place (
                 id = "2",
@@ -56,7 +57,8 @@ class PlacesViewModel: ViewModel () {
                     Schedule(DayOfWeek.MONDAY, open = LocalTime.of(10, 0), close = LocalTime.of( 20, 0)),
                     Schedule(DayOfWeek.THURSDAY, open = LocalTime.of(10, 0), close = LocalTime.of(20,0)),
                     Schedule(DayOfWeek.FRIDAY, open = LocalTime.of(10, 0), close = LocalTime.of(20, 0))
-                )
+                ),
+                ownerId = "2"
             ),
             Place (
                 id = "3",
@@ -72,7 +74,8 @@ class PlacesViewModel: ViewModel () {
                     Schedule(DayOfWeek.MONDAY, open = LocalTime.of(10, 0), close = LocalTime.of( 20, 0)),
                     Schedule(DayOfWeek.THURSDAY, open = LocalTime.of(10, 0), close = LocalTime.of(20,0)),
                     Schedule(DayOfWeek.FRIDAY, open = LocalTime.of(10, 0), close = LocalTime.of(20, 0))
-                )
+                ),
+                ownerId = "3"
             ),
             Place (
                 id = "4",
@@ -88,7 +91,8 @@ class PlacesViewModel: ViewModel () {
                     Schedule(DayOfWeek.MONDAY, open = LocalTime.of(10, 0), close = LocalTime.of( 20, 0)),
                     Schedule(DayOfWeek.THURSDAY, open = LocalTime.of(10, 0), close = LocalTime.of(20,0)),
                     Schedule(DayOfWeek.FRIDAY, open = LocalTime.of(10, 0), close = LocalTime.of(20, 0))
-                )
+                ),
+                ownerId = "2"
             )
         )//End listOf
     }//End fun loadPlaces

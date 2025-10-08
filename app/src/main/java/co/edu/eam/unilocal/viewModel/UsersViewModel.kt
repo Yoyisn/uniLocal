@@ -1,6 +1,7 @@
 package co.edu.eam.unilocal.viewModel
 
 import androidx.lifecycle.ViewModel
+import co.edu.eam.unilocal.model.City
 import co.edu.eam.unilocal.model.Role
 import co.edu.eam.unilocal.model.User
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,9 +22,8 @@ class UsersViewModel: ViewModel() {
             User(
                 id = "1",
                 name = "Admin",
-                //username = "admin",
                 role = Role.ADMIN,
-                city = "Armenia",
+                city = City.BOGOTA,
                 phoneNumber = "3113509873",
                 email = "admin@gmail.com",
                 password = "123456",
@@ -31,11 +31,19 @@ class UsersViewModel: ViewModel() {
             User(
                 id = "2",
                 name = "Carlos",
-                //username = "carlosf",
                 role = Role.USER,
-                city = "Armenia",
+                city = City.MEDELLIN,
                 phoneNumber = "3113509873",
                 email = "carlos@gmail.com",
+                password = "123456",
+            ),
+            User(
+                id = "3",
+                name = "Jordy",
+                role = Role.USER,
+                city = City.MANIZALES,
+                phoneNumber = "3113509873",
+                email = "jordy@gmail.com",
                 password = "123456",
             )
         )//End listOf

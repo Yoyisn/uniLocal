@@ -39,7 +39,6 @@ fun HomeUserScreen (
     logout: () -> Unit
 ){
     val navController = rememberNavController()
-    val currentScreen = navController.currentBackStackEntryAsState().value?.destination
 
     var showFAB by remember { mutableStateOf(false) }
     var showTopBar by remember { mutableStateOf(true) }

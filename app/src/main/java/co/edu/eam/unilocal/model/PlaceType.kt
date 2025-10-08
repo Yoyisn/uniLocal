@@ -1,6 +1,6 @@
 package co.edu.eam.unilocal.model
 
-enum class PlaceType (name: String ) {
+enum class PlaceType (override val displayName: String): DisplayableEnum {
     RESTAURANT( "Restaurant" ),
     BAR("Bar"),
     HOTEL("Hotel"),

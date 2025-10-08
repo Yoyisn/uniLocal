@@ -29,6 +29,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import co.edu.eam.uniLocal_project.R
+import co.edu.eam.unilocal.model.City
+import co.edu.eam.unilocal.model.DisplayableEnum
 import co.edu.eam.unilocal.ui.components.DropdownMenu
 import co.edu.eam.unilocal.ui.components.InputText
 
@@ -41,10 +43,13 @@ fun EditUserScreen( onNavigateToEditProfile: () -> Unit ) {
     var userName by rememberSaveable { mutableStateOf("") }
 
     var country by remember { mutableStateOf("") }
-    var city by remember { mutableStateOf("") }
+    //var city by remember { mutableStateOf("") }
+
+    var city by remember { mutableStateOf<DisplayableEnum>(City.ARMENIA) }
+    val cities = City.entries
 
     val countries = listOf("Colombia", "Peru", "Venezuela","Ecuador")
-    val cities = listOf("Bogota", "Lima", "Caracas","Quito")
+    //val cities = listOf("Bogota", "Lima", "Caracas","Quito")
 
     val context = LocalContext.current
 
@@ -98,7 +103,6 @@ fun EditUserScreen( onNavigateToEditProfile: () -> Unit ) {
             Button (
                 onClick = {
                     val isValid = registerName.isNotBlank() &&
-                            city.isNotBlank() &&
                             phoneNumber.length >= 10 &&
                             email.isNotBlank() && Patterns.EMAIL_ADDRESS.matcher(email).matches()
                     if (isValid) {

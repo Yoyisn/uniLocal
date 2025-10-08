@@ -1,7 +1,9 @@
 package co.edu.eam.unilocal.ui.places
 
+import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -38,6 +40,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -48,22 +51,43 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import co.edu.eam.unilocal.model.City
+import co.edu.eam.unilocal.model.DayOfWeek
+import co.edu.eam.unilocal.model.DisplayableEnum
+import co.edu.eam.unilocal.model.Location
+import co.edu.eam.unilocal.model.Place
+import co.edu.eam.unilocal.model.PlaceType
+import co.edu.eam.unilocal.model.Schedule
 import co.edu.eam.unilocal.ui.components.DropdownMenu
 import co.edu.eam.unilocal.ui.components.InputText
+import java.time.LocalTime
+import java.util.UUID
+import kotlin.enums.EnumEntries
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddPlacesScreen( onNavigateBackTo: () -> Unit, onNavigateToMyPlaces: () -> Unit ) {
+fun AddPlacesScreen( userId: String?, onNavigateBackTo: () -> Unit ) {
 
     var title by rememberSaveable { mutableStateOf("") }
     var description by rememberSaveable { mutableStateOf("") }
     var address by rememberSaveable { mutableStateOf("") }
     var phone by rememberSaveable { mutableStateOf("") }
-    var city by remember { mutableStateOf("") }
-    var category by remember { mutableStateOf("") }
+
+    var city by remember { mutableStateOf<DisplayableEnum>(City.ARMENIA) }
+    val cities = City.entries
+
+    var type by remember { mutableStateOf<DisplayableEnum>(PlaceType.RESTAURANT) }
+    val types = PlaceType.entries
+
+    val schedule = remember { mutableStateListOf(
+        Schedule(DayOfWeek.MONDAY, LocalTime.of(9, 0), LocalTime.of(18, 0))
+    ) }
+
+    //var category by remember { mutableStateOf("") }
     var imageSelected by remember { mutableStateOf(false) }
-    val cities = listOf("Bogotá", "Lima", "Caracas", "Quito", "Armenia")
-    val categories = listOf("Restaurante", "Hotel", "Museo", "Parque")
+    //val cities = listOf("Bogotá", "Lima", "Caracas", "Quito", "Armenia")
+    //val categories = listOf("Restaurante", "Hotel", "Museo", "Parque")
 
     val context = LocalContext.current
 
@@ -156,8 +180,8 @@ fun AddPlacesScreen( onNavigateBackTo: () -> Unit, onNavigateToMyPlaces: () -> U
                 supportingText = "Seleccione una categoría",
                 icon = Icons.Rounded.Menu,
                 label = "Seleccione la categoría",
-                list = categories,
-                onValueChange = { category = it }
+                list = types,
+                onValueChange = { type = it }
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -210,12 +234,25 @@ fun AddPlacesScreen( onNavigateBackTo: () -> Unit, onNavigateToMyPlaces: () -> U
                             description.isNotBlank() &&
                             address.length >= 10 &&
                             phone.length >= 10 &&
-                            city.isNotBlank() &&
-                            category.isNotBlank()
+                            city.displayName.isNotBlank() &&
+                            type.displayName.isNotBlank()
 
                     if (isValid) {
                         Toast.makeText(context, "Lugar agregado correctamente", Toast.LENGTH_LONG).show()
-                        onNavigateToMyPlaces()
+                        val place = Place(
+                            id = UUID.randomUUID().toString(),
+                            title = title,
+                            description = description,
+                            address = address,
+                            city = city as City,
+                            location = Location(1.0, 1.0),
+                            images = listOf(),
+                            phones = listOf(phone),
+                            type = type as PlaceType,
+                            schedules = schedule,
+                            ownerId = userId ?: ""
+                        )
+                        onNavigateBackTo()
                     } else {
                         Toast.makeText(context, "Por favor verifique los datos ingresados", Toast.LENGTH_LONG).show()
                     }

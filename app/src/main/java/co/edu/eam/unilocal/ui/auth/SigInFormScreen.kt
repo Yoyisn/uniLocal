@@ -35,6 +35,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import co.edu.eam.uniLocal_project.R
+import co.edu.eam.unilocal.model.City
+import co.edu.eam.unilocal.model.DisplayableEnum
 import co.edu.eam.unilocal.model.Role
 import co.edu.eam.unilocal.model.User
 import co.edu.eam.unilocal.ui.components.DropdownMenu
@@ -55,10 +57,13 @@ fun SigInFormScreen ( onNavigateToHome: () -> Unit ) {
     var confirmPassword by rememberSaveable { mutableStateOf("") }
 
     var country by remember { mutableStateOf("") }
-    var city by remember { mutableStateOf("") }
+    //var city by remember { mutableStateOf("") }
+
+    var city by remember { mutableStateOf<DisplayableEnum>(City.ARMENIA) }
+    val cities = City.entries
 
     val countries = listOf("Colombia", "Peru", "Venezuela","Ecuador")
-    val cities = listOf("Bogota", "Lima", "Caracas","Quito")
+    //val cities = listOf("Bogota", "Lima", "Caracas","Quito")
 
     val context = LocalContext.current
 
@@ -127,7 +132,6 @@ fun SigInFormScreen ( onNavigateToHome: () -> Unit ) {
             Button (
                 onClick = {
                     val isValid = registerName.isNotBlank() &&
-                            city.isNotBlank() &&
                             phoneNumber.length >= 10 &&
                             email.isNotBlank() && Patterns.EMAIL_ADDRESS.matcher(email).matches() &&
                             password.length >= 5 &&
@@ -137,7 +141,7 @@ fun SigInFormScreen ( onNavigateToHome: () -> Unit ) {
                         val user = User(
                         id = UUID.randomUUID().toString(),
                         name = registerName,
-                        city = city,
+                        city = city as City,
                         phoneNumber = phoneNumber,
                         email = email,
                         role = Role.USER,
