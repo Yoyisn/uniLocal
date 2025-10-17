@@ -2,10 +2,14 @@ package co.edu.eam.unilocal.ui.user.screens
 
 import android.util.Patterns
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AccountBox
 import androidx.compose.material.icons.rounded.Call
@@ -25,7 +29,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import co.edu.eam.uniLocal_project.R
@@ -56,11 +63,19 @@ fun EditUserScreen( onNavigateToEditProfile: () -> Unit ) {
     Surface {
         Column (
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(-10.dp, Alignment.Top),
+            verticalArrangement = Arrangement.spacedBy(3.dp, Alignment.Top),
             modifier = Modifier
                 .fillMaxSize()
                 .padding(50.dp)
         ){
+            Image(
+                modifier = Modifier.width(150.dp)
+                                    .clip(CircleShape),
+                painter = painterResource(R.drawable.profile),
+                contentScale = ContentScale.Crop,
+                contentDescription = stringResource(R.string.image_txtInfoScreen)
+            )//End Image
+
             InputText(
                 value = registerName,
                 label = stringResource( R.string.txt_registerName ),

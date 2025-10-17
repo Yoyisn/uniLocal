@@ -4,6 +4,7 @@ import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -50,7 +51,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import co.edu.eam.uniLocal_project.R
 import co.edu.eam.unilocal.model.City
 import co.edu.eam.unilocal.model.DayOfWeek
 import co.edu.eam.unilocal.model.DisplayableEnum
@@ -60,6 +64,7 @@ import co.edu.eam.unilocal.model.PlaceType
 import co.edu.eam.unilocal.model.Schedule
 import co.edu.eam.unilocal.ui.components.DropdownMenu
 import co.edu.eam.unilocal.ui.components.InputText
+import co.edu.eam.unilocal.ui.navigation.LocalMainViewModel
 import java.time.LocalTime
 import java.util.UUID
 import kotlin.enums.EnumEntries
@@ -79,6 +84,8 @@ fun AddPlacesScreen( userId: String?, onNavigateBackTo: () -> Unit ) {
 
     var type by remember { mutableStateOf<DisplayableEnum>(PlaceType.RESTAURANT) }
     val types = PlaceType.entries
+
+    val placesViewModel = LocalMainViewModel.current.placesViewModel
 
     val schedule = remember { mutableStateListOf(
         Schedule(DayOfWeek.MONDAY, LocalTime.of(9, 0), LocalTime.of(18, 0))
@@ -123,6 +130,12 @@ fun AddPlacesScreen( userId: String?, onNavigateBackTo: () -> Unit ) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
+
+            Image(
+                modifier = Modifier.width(150.dp),
+                painter = painterResource(R.drawable.unilocallogo),
+                contentDescription = stringResource(R.string.image_txtInfoScreen)
+            )//End Image
 
             Text(
                 text = " --------------- General Information ------------------",
@@ -230,12 +243,8 @@ fun AddPlacesScreen( userId: String?, onNavigateBackTo: () -> Unit ) {
 
             Button(
                 onClick = {
-                    val isValid = title.isNotBlank() &&
-                            description.isNotBlank() &&
-                            address.length >= 10 &&
-                            phone.length >= 10 &&
-                            city.displayName.isNotBlank() &&
-                            type.displayName.isNotBlank()
+                    val isValid = title.isNotBlank() && description.isNotBlank() && address.length >= 10 && phone.length >= 10 &&
+                            city.displayName.isNotBlank() && type.displayName.isNotBlank()
 
                     if (isValid) {
                         Toast.makeText(context, "Lugar agregado correctamente", Toast.LENGTH_LONG).show()
@@ -252,6 +261,7 @@ fun AddPlacesScreen( userId: String?, onNavigateBackTo: () -> Unit ) {
                             schedules = schedule,
                             ownerId = userId ?: ""
                         )
+                        placesViewModel.create(place)
                         onNavigateBackTo()
                     } else {
                         Toast.makeText(context, "Por favor verifique los datos ingresados", Toast.LENGTH_LONG).show()
