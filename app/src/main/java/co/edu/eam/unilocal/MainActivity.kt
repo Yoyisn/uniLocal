@@ -16,7 +16,6 @@ import co.edu.eam.unilocal.viewModel.UsersViewModel
 import kotlin.getValue
 
 class MainActivity : ComponentActivity() {
-
     private val usersViewModel: UsersViewModel by viewModels()
     private val reviewsViewModel: ReviewsViewModel by viewModels()
     private val placesViewModel: PlacesViewModel by viewModels()
@@ -39,5 +38,6 @@ class MainActivity : ComponentActivity() {
                 }//End uniLocalTheme
             }//End content
         )//End set content
+
     }//End onCreate
 }//End class MainActivity

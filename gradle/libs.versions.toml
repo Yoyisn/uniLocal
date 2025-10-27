@@ -11,6 +11,7 @@ material = "1.12.0"
 navigationCompose = "2.9.1"
 kotlinxSerialization = "1.9.0"
 coilCompose = "2.7.0"
+mapsCompose = "11.11.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -21,6 +22,8 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
+maps-android = { module = "com.mapbox.maps:android", version.ref = "mapsCompose" }
+maps-compose = { module = "com.mapbox.extension:maps-compose", version.ref = "mapsCompose" }
 
 # Compose
 activity-compose = { group = "androidx.activity", name = "activity-compose", version = "1.9.2" }
