@@ -1,6 +1,7 @@
 package co.edu.eam.unilocal.ui.places
 
 import android.os.Build
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
@@ -64,7 +65,9 @@ import co.edu.eam.unilocal.model.PlaceType
 import co.edu.eam.unilocal.model.Schedule
 import co.edu.eam.unilocal.ui.components.DropdownMenu
 import co.edu.eam.unilocal.ui.components.InputText
+import co.edu.eam.unilocal.ui.components.MapBox
 import co.edu.eam.unilocal.ui.navigation.LocalMainViewModel
+import com.mapbox.geojson.Point
 import java.time.LocalTime
 import java.util.UUID
 import kotlin.enums.EnumEntries
@@ -73,6 +76,8 @@ import kotlin.enums.EnumEntries
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddPlacesScreen( userId: String?, onNavigateBackTo: () -> Unit ) {
+
+    var clickedPoint by rememberSaveable { mutableStateOf<Point?>(null) }
 
     var title by rememberSaveable { mutableStateOf("") }
     var description by rememberSaveable { mutableStateOf("") }
@@ -241,12 +246,21 @@ fun AddPlacesScreen( userId: String?, onNavigateBackTo: () -> Unit ) {
 
             Spacer(modifier = Modifier.height(32.dp))
 
+            MapBox (
+                modifier = Modifier.fillMaxWidth()
+                    .height(400.dp),
+                activateClick = true,
+                onMapClickListener = { l ->
+                    clickedPoint = l
+                }
+            )
+
             Button(
                 onClick = {
                     val isValid = title.isNotBlank() && description.isNotBlank() && address.length >= 10 && phone.length >= 10 &&
                             city.displayName.isNotBlank() && type.displayName.isNotBlank()
 
-                    if (isValid) {
+                    if (isValid && clickedPoint != null) {
                         Toast.makeText(context, "Lugar agregado correctamente", Toast.LENGTH_LONG).show()
                         val place = Place(
                             id = UUID.randomUUID().toString(),
@@ -254,7 +268,7 @@ fun AddPlacesScreen( userId: String?, onNavigateBackTo: () -> Unit ) {
                             description = description,
                             address = address,
                             city = city as City,
-                            location = Location(1.0, 1.0),
+                            location = Location(clickedPoint!!.latitude(), clickedPoint!!.longitude()),
                             images = listOf(),
                             phones = listOf(phone),
                             type = type as PlaceType,
@@ -264,7 +278,7 @@ fun AddPlacesScreen( userId: String?, onNavigateBackTo: () -> Unit ) {
                         placesViewModel.create(place)
                         onNavigateBackTo()
                     } else {
-                        Toast.makeText(context, "Por favor verifique los datos ingresados", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "Por favor verifique los datos ingresados, no pueden estar vacios", Toast.LENGTH_LONG).show()
                     }
                 },
                 modifier = Modifier
