@@ -23,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,14 +42,16 @@ import co.edu.eam.unilocal.model.Role
 import co.edu.eam.unilocal.model.User
 import co.edu.eam.unilocal.ui.components.DropdownMenu
 import co.edu.eam.unilocal.ui.components.InputText
+import co.edu.eam.unilocal.ui.components.OperationResultHandler
 import co.edu.eam.unilocal.ui.navigation.LocalMainViewModel
-import java.util.UUID
+import co.edu.eam.unilocal.viewModel.UsersViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun SigInFormScreen ( onNavigateToHome: () -> Unit ) {
 
     val usersViewModel = LocalMainViewModel.current.usersViewModel
+    val userResult by usersViewModel.userResult.collectAsState()
 
     var registerName by rememberSaveable { mutableStateOf("") }
     var phoneNumber by rememberSaveable { mutableStateOf("") }
@@ -139,7 +142,7 @@ fun SigInFormScreen ( onNavigateToHome: () -> Unit ) {
 
                     if (isValid) {
                         val user = User(
-                        id = UUID.randomUUID().toString(),
+                        //id = UUID.randomUUID().toString(),
                         name = registerName,
                         city = city as City,
                         phoneNumber = phoneNumber,
@@ -148,7 +151,6 @@ fun SigInFormScreen ( onNavigateToHome: () -> Unit ) {
                         password = password
                         )
                         usersViewModel.create(user)
-                        onNavigateToHome()
                         Toast.makeText(context, "Successfully registered", Toast.LENGTH_LONG).show()
                     } else {
                         Toast.makeText(context, "Something is wrong in your data, check it", Toast.LENGTH_LONG).show()
@@ -162,6 +164,15 @@ fun SigInFormScreen ( onNavigateToHome: () -> Unit ) {
                 Spacer(modifier = Modifier.width(5.dp))
                 Text( text = stringResource( R.string.txt_sigIn ) )
             }//End button
+
+            OperationResultHandler(
+                result = userResult,
+                onSuccess = {
+                    onNavigateToHome()
+                    usersViewModel.resetOperationResult()
+                },
+                onFailure = { usersViewModel.resetOperationResult() }
+            )
 
         }//End column
     }//End surface

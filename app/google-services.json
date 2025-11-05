@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "631082603159",
+    "project_id": "smartcitymaps-8728c",
+    "storage_bucket": "smartcitymaps-8728c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:631082603159:android:23dd6e05ffbcb7fc0c8fd2",
+        "android_client_info": {
+          "package_name": "co.edu.eam.uniLocal_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCu8Z3He06DRubqjVlpcRNIq6NGRWwj4oM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
