@@ -34,6 +34,7 @@ import kotlin.math.log
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeUserScreen (
+    userId: String,
     onNavigateToAddPlaces: () -> Unit,
     onNavigateToPlaceDetail: (String) -> Unit,
     logout: () -> Unit
@@ -79,6 +80,7 @@ fun HomeUserScreen (
             }
         ) {
             padding -> ContentUser(
+            userId = userId,
             navController = navController,
             padding = padding,
             onNavigateToPlaceDetail = onNavigateToPlaceDetail

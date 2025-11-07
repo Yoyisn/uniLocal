@@ -7,6 +7,7 @@ import co.edu.eam.unilocal.model.Role
 import co.edu.eam.unilocal.model.User
 import co.edu.eam.unilocal.utils.RequestResult
 import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,6 +27,8 @@ class UsersViewModel: ViewModel() {
 
     val db = Firebase.firestore
 
+    val auth: FirebaseAuth = FirebaseAuth.getInstance()
+
     init {
         loadUsers()
     }
@@ -42,9 +45,21 @@ class UsersViewModel: ViewModel() {
     }
 
     private suspend fun createFirebase (user: User) {
-        db.collection("users").add(user).await()
+        val newUser = auth.createUserWithEmailAndPassword(user.email, user.password).await()
+        val uid = newUser.user?.uid ?: throw Exception ( "Error getting UID from user created" )
+
+        val userCopy = user.copy(
+            id = uid,
+            password = ""
+        )
+
+        db.collection( "users" )
+            .document( uid )
+            .set( userCopy )
+            .await()
     }
 
+    /*
     fun findById (id: String) {
         viewModelScope.launch {
             _userResult.value = RequestResult.Loading
@@ -55,6 +70,7 @@ class UsersViewModel: ViewModel() {
                 )// End fold
         }//End viewModelScope.launch
     }
+    */
 
     private suspend fun findByIdFirebase (id: String) {
         val snapshot = db.collection("users").document(id).get().await()
@@ -68,26 +84,23 @@ class UsersViewModel: ViewModel() {
     fun login ( email: String, password: String ){
         viewModelScope.launch {
             _userResult.value = RequestResult.Loading
-            _userResult.value = runCatching { loginFirebase(email, password) }
-                .fold(
+            _userResult.value = runCatching { loginFirebase(email, password) }.fold(
                     onSuccess = { RequestResult.Success( "User loged successfully" ) },
-                    onFailure = { RequestResult.Failure( it.message ?: "Error login user" ) }
+                    onFailure = { RequestResult.Failure( "Error login user" ) }
                 )// End fold
         }//End viewModelScope.launch
     }
-    private suspend fun loginFirebase ( email: String, password: String ){
-        val snapshot = db.collection("users").whereEqualTo( "email", email ).whereEqualTo( "password", password ).get().await()
 
-        if ( snapshot.documents.isEmpty() ) {
-            throw Exception ( "Email or password are wrong" )
-        } else {
-            snapshot.documents.mapNotNull {
-                var user = it.toObject( User::class.java )?.apply{
-                    this.id = it.id
-                }
-                _currentUser.value = user
-            }
-        }
+    private suspend fun loginFirebase ( email: String, password: String ){
+        val responseUser = auth.signInWithEmailAndPassword( email, password ).await()
+        val uid = responseUser.user?.uid ?: throw Exception ( "User not founded" )
+
+        findByIdFirebase(uid)
+    }
+
+    fun logout() {
+        auth.signOut()
+        _currentUser.value = null
     }
 
     fun resetOperationResult () {

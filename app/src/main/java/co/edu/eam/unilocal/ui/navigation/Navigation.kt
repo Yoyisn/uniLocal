@@ -4,8 +4,13 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -21,19 +26,21 @@ import co.edu.eam.unilocal.ui.places.PlaceDetail
 import co.edu.eam.unilocal.ui.user.nav.UserScreen
 import co.edu.eam.unilocal.utils.SharedPrefsUtil
 import co.edu.eam.unilocal.viewModel.MainViewModel
+import co.edu.eam.unilocal.viewModel.UsersViewModel
 
 val LocalMainViewModel = staticCompositionLocalOf<MainViewModel> { error("MainViewModel is not provided") }
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Navigation (
-    mainViewModel: MainViewModel
+    mainViewModel: MainViewModel,
+    usersViewModel: UsersViewModel = viewModel()
 ) {
 
     val context = LocalContext.current
 
     val navController = rememberNavController()
-    val user = SharedPrefsUtil.getPreference(context)
+    var user by remember { mutableStateOf( SharedPrefsUtil.getPreference(context) ) }
 
     val startDestination = if ( user.isEmpty() ) {
         RouteScreen.Info
@@ -66,6 +73,7 @@ fun Navigation (
                     onNavigateToHome = { userId,  role ->
 
                         SharedPrefsUtil.savePreferences(context, userId, role)
+                        user = SharedPrefsUtil.getPreference(context)
 
                         if ( role == Role.ADMIN ) {
                             navController.navigate(RouteScreen.HomeAdmin)
@@ -86,11 +94,16 @@ fun Navigation (
 
             composable<RouteScreen.HomeUser> {
                 HomeUserScreen(
+                    userId = user["userId"]!!,
                     onNavigateToPlaceDetail = { navController.navigate(RouteScreen.PlaceDetail(it))},
                     onNavigateToAddPlaces = { navController.navigate(RouteScreen.AddPlacesScreen) },
                     logout = {
+                        usersViewModel.logout()
                         SharedPrefsUtil.clearPreferences(context)
-                        navController.navigate(RouteScreen.Info)
+                        navController.navigate(RouteScreen.Info) {
+                            popUpTo ( navController.graph.startDestinationId ) { inclusive = true }
+                            launchSingleTop = true
+                        }
                     }
                 )
             }
@@ -101,8 +114,7 @@ fun Navigation (
 
             composable<RouteScreen.AddPlacesScreen> {
                 AddPlacesScreen(
-                    userId = user["userId"],
-                    //onNavigateToMyPlaces = { navController.navigate(UserScreen.Places) },
+                    userId = user["userId"] ?: "",
                     onNavigateBackTo = { navController.popBackStack() }
                 )
             }
@@ -111,10 +123,8 @@ fun Navigation (
                 val args = it.toRoute<RouteScreen.PlaceDetail>()
                 PlaceDetail(
                     placeId = args.id,
-                    userId = user["userId"],
-                    //navController = navController,
+                    userId = user["userId"] ?: "",
                     onNavigateBackTo = { navController.popBackStack() },
-
                 )
             }
 

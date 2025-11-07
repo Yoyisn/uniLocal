@@ -41,6 +41,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -66,9 +67,11 @@ import co.edu.eam.unilocal.model.Schedule
 import co.edu.eam.unilocal.ui.components.DropdownMenu
 import co.edu.eam.unilocal.ui.components.InputText
 import co.edu.eam.unilocal.ui.components.MapBox
+import co.edu.eam.unilocal.ui.components.OperationResultHandler
 import co.edu.eam.unilocal.ui.navigation.LocalMainViewModel
 import com.mapbox.geojson.Point
 import java.time.LocalTime
+import java.util.Date
 import java.util.UUID
 import kotlin.enums.EnumEntries
 
@@ -76,6 +79,9 @@ import kotlin.enums.EnumEntries
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddPlacesScreen( userId: String?, onNavigateBackTo: () -> Unit ) {
+
+    val placesViewModel = LocalMainViewModel.current.placesViewModel
+    val placeResult by placesViewModel.placeResult.collectAsState()
 
     var clickedPoint by rememberSaveable { mutableStateOf<Point?>(null) }
 
@@ -90,11 +96,9 @@ fun AddPlacesScreen( userId: String?, onNavigateBackTo: () -> Unit ) {
     var type by remember { mutableStateOf<DisplayableEnum>(PlaceType.RESTAURANT) }
     val types = PlaceType.entries
 
-    val placesViewModel = LocalMainViewModel.current.placesViewModel
-
-    val schedule = remember { mutableStateListOf(
-        Schedule(DayOfWeek.MONDAY, LocalTime.of(9, 0), LocalTime.of(18, 0))
-    ) }
+    val schedule = remember {
+        mutableStateListOf( Schedule(DayOfWeek.MONDAY, Date(), Date()) )
+    }
 
     //var category by remember { mutableStateOf("") }
     var imageSelected by remember { mutableStateOf(false) }
@@ -255,6 +259,15 @@ fun AddPlacesScreen( userId: String?, onNavigateBackTo: () -> Unit ) {
                 }
             )
 
+            OperationResultHandler(
+                result = placeResult,
+                onSuccess = {
+                    onNavigateBackTo()
+                    placesViewModel.resetOperationResult()
+                },
+                onFailure = { placesViewModel.resetOperationResult() }
+            )
+
             Button(
                 onClick = {
                     val isValid = title.isNotBlank() && description.isNotBlank() && address.length >= 10 && phone.length >= 10 &&
@@ -263,14 +276,14 @@ fun AddPlacesScreen( userId: String?, onNavigateBackTo: () -> Unit ) {
                     if (isValid && clickedPoint != null) {
                         Toast.makeText(context, "Lugar agregado correctamente", Toast.LENGTH_LONG).show()
                         val place = Place(
-                            id = UUID.randomUUID().toString(),
+                            id = "",
                             title = title,
                             description = description,
                             address = address,
                             city = city as City,
                             location = Location(clickedPoint!!.latitude(), clickedPoint!!.longitude()),
                             images = listOf(),
-                            phones = listOf(phone),
+                            phones = "",
                             type = type as PlaceType,
                             schedules = schedule,
                             ownerId = userId ?: ""
@@ -293,6 +306,7 @@ fun AddPlacesScreen( userId: String?, onNavigateBackTo: () -> Unit ) {
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(text = "Agregar lugar")
             }
+
         }
     }//End Scaffold
 

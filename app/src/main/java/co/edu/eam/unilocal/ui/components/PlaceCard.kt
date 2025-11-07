@@ -58,7 +58,7 @@ fun PlaceCard( place: Place, onClick: (String) -> Unit ) {
                 )
 
                 Text(
-                    text = place.phones.firstOrNull() ?: "",
+                    text = "", //place.phones.firstOrNull() ?:
                     style = MaterialTheme.typography.bodySmall
                 )
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -80,7 +80,7 @@ fun PlaceCard( place: Place, onClick: (String) -> Unit ) {
 
             // Imagen a la derecha
             AsyncImage(
-                model = place.images.firstOrNull(),
+                model = "",
                 contentDescription = place.title,
                 modifier = Modifier
                     .size(90.dp)

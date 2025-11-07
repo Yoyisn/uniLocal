@@ -18,10 +18,10 @@ fun OperationResultHandler (
             LinearProgressIndicator()
         }
         is RequestResult.Success -> {
-            Text ( text = result.message )
+            AlertMessage ( type = AlertType.SUCCESS, message = result.message )
         }
         is RequestResult.Failure -> {
-            Text ( text = result.errorMessage )
+            AlertMessage ( type = AlertType.ERROR, message = result.errorMessage )
         }
         else -> {}
     }//End when

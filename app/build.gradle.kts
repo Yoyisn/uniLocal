@@ -55,6 +55,7 @@ dependencies {
     implementation("androidx.compose.material:material:1.6.7")
     implementation("androidx.compose.ui:ui-tooling-preview:1.6.7")
     implementation(libs.firebase.firestore)
+    implementation(libs.firebase.auth)
     debugImplementation("androidx.compose.ui:ui-tooling:1.6.7")
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)

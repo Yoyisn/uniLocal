@@ -16,6 +16,7 @@ import co.edu.eam.unilocal.ui.user.screens.Search
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ContentUser (
+    userId: String,
     padding: PaddingValues,
     navController: NavHostController,
     onNavigateToPlaceDetail: (String) -> Unit
@@ -36,6 +37,7 @@ fun ContentUser (
         }
         composable<UserScreen.Places> {
             Places(
+                userId = userId,
                 padding = padding,
                 //placesViewModel = placesViewModel,
                 onNavigateToPlaceDetail = onNavigateToPlaceDetail

@@ -22,18 +22,21 @@ import co.edu.eam.unilocal.ui.navigation.LocalMainViewModel
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Places(
+    userId: String,
     onNavigateToPlaceDetail: (String) -> Unit,
     padding: PaddingValues,
     //placesViewModel: PlacesViewModel
 ) {
     //val places by placesViewModel.places.collectAsState()
     val placesViewModel = LocalMainViewModel.current.placesViewModel
-    val places by placesViewModel.places.collectAsState()
+
+    placesViewModel.getMyPlaces( userId )
+    val myPlaces by placesViewModel.myPlaces.collectAsState()
 
     PlacesList(
         onNavigateToPlaceDetail = onNavigateToPlaceDetail,
         padding = padding,
-        places = places
+        places = myPlaces
     )
 
 }

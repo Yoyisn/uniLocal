@@ -1,15 +1,15 @@
 package co.edu.eam.unilocal.model
 
 data class Place (
-    val id: String,
-    val title: String,
-    val description: String,
-    val city: City,
-    val address: String,
-    val location: Location,
-    val images: List<String>,
-    val phones: List<String>,
-    val type: PlaceType,
-    val schedules: List<Schedule>,
-    val ownerId: String,
+    var id: String = "",
+    val title: String = "",
+    val description: String = "",
+    val city: City = City.DEFAULT,
+    val address: String = "",
+    val location: Location = Location(),
+    val images: List<String> = emptyList<String>(),
+    val phones: String = "",
+    val type: PlaceType = PlaceType.DEFAULT,
+    val schedules: List<Schedule> = emptyList<Schedule>(),
+    val ownerId: String = "",
 )
