@@ -1,6 +1,6 @@
 <resources>
     <!-- InfoScreen -->
-    <string name="app_name">uniLocal_project</string>
+    <string name="app_name">uniLocal</string>
     <string name="image_txtInfoScreen">ImageLogo</string>
     <string name="txt_infoAboutUs">Un Plataforma que incentiva el comercio y la gastronomia regional,
     donde buscamos apoyar a los pequeños comerciantes de tu ciudad.</string>
