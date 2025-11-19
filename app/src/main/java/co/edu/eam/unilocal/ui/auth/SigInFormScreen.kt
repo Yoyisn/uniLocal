@@ -53,6 +53,8 @@ fun SigInFormScreen ( onNavigateToHome: () -> Unit ) {
     val usersViewModel = LocalMainViewModel.current.usersViewModel
     val userResult by usersViewModel.userResult.collectAsState()
 
+    println("USER_RESULT: $userResult")
+
     var registerName by rememberSaveable { mutableStateOf("") }
     var phoneNumber by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }

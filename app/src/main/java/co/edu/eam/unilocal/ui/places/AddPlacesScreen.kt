@@ -1,9 +1,16 @@
 package co.edu.eam.unilocal.ui.places
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -46,6 +53,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -56,6 +64,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import co.edu.eam.uniLocal_project.R
 import co.edu.eam.unilocal.model.City
 import co.edu.eam.unilocal.model.DayOfWeek
@@ -69,7 +78,12 @@ import co.edu.eam.unilocal.ui.components.InputText
 import co.edu.eam.unilocal.ui.components.MapBox
 import co.edu.eam.unilocal.ui.components.OperationResultHandler
 import co.edu.eam.unilocal.ui.navigation.LocalMainViewModel
+import coil.compose.AsyncImage
+import com.cloudinary.Cloudinary
+import com.cloudinary.utils.ObjectUtils
 import com.mapbox.geojson.Point
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.time.LocalTime
 import java.util.Date
 import java.util.UUID
@@ -78,7 +92,7 @@ import kotlin.enums.EnumEntries
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddPlacesScreen( userId: String?, onNavigateBackTo: () -> Unit ) {
+fun AddPlacesScreen( userId: String?, onNavigateBackTo: () -> Unit, context: Context) {
 
     val placesViewModel = LocalMainViewModel.current.placesViewModel
     val placeResult by placesViewModel.placeResult.collectAsState()
@@ -92,6 +106,39 @@ fun AddPlacesScreen( userId: String?, onNavigateBackTo: () -> Unit ) {
 
     var city by remember { mutableStateOf<DisplayableEnum>(City.ARMENIA) }
     val cities = City.entries
+
+    var image by remember { mutableStateOf("") }
+
+    val config = mapOf(
+        "cloud_name" to "djgr3sbwf",
+        "api_key" to "912981869431355",
+        "api_secret" to "RCtRXZktFsQuJRv3RN714XuXoyY"
+    )
+
+    val scope = rememberCoroutineScope()
+    val cloudinary = Cloudinary(config)
+
+    val fileLauncher = rememberLauncherForActivityResult( contract = ActivityResultContracts.GetContent() ) { uri: Uri? ->
+        uri?.let{
+            scope.launch(Dispatchers.IO ) {
+                val inputStream = context.contentResolver.openInputStream( it )
+                inputStream?.use { stream ->
+                    val result = cloudinary.uploader().upload( stream, ObjectUtils.emptyMap() )
+                    val imageUrl = result[ "secure_url" ].toString()
+                    image = imageUrl
+                   // onImageSelected( imageUrl )
+                }
+            }
+        }
+    }
+
+    val permissonLauncher = rememberLauncherForActivityResult( contract = ActivityResultContracts.RequestPermission() ) {
+        if ( it ) {
+            Toast.makeText( context, "Permiso concedido", Toast.LENGTH_SHORT ).show()
+        } else {
+            Toast.makeText( context, "Permiso denegado", Toast.LENGTH_SHORT ).show()
+        }
+    }
 
     var type by remember { mutableStateOf<DisplayableEnum>(PlaceType.RESTAURANT) }
     val types = PlaceType.entries
@@ -238,6 +285,21 @@ fun AddPlacesScreen( userId: String?, onNavigateBackTo: () -> Unit ) {
                     )
                     .clickable {
                         imageSelected = !imageSelected
+                        val permissonCheckResult = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU) {
+                            ContextCompat.checkSelfPermission(context, Manifest.permission.READ_MEDIA_IMAGES)
+                        } else {
+                            ContextCompat.checkSelfPermission(context,Manifest.permission.READ_MEDIA_IMAGES)
+                        }
+
+                        if( permissonCheckResult == PackageManager.PERMISSION_GRANTED) {
+                            fileLauncher.launch( "image/*" )
+                        } else {
+                            if( Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU ) {
+                                permissonLauncher.launch( Manifest.permission.READ_MEDIA_IMAGES )
+                            } else {
+                                permissonLauncher.launch( Manifest.permission.READ_EXTERNAL_STORAGE )
+                            }
+                        }
                     },
                 contentAlignment = Alignment.Center
             ) {
@@ -282,7 +344,7 @@ fun AddPlacesScreen( userId: String?, onNavigateBackTo: () -> Unit ) {
                             address = address,
                             city = city as City,
                             location = Location(clickedPoint!!.latitude(), clickedPoint!!.longitude()),
-                            images = listOf(),
+                            images = listOf(image),
                             phones = "",
                             type = type as PlaceType,
                             schedules = schedule,
@@ -293,6 +355,9 @@ fun AddPlacesScreen( userId: String?, onNavigateBackTo: () -> Unit ) {
                     } else {
                         Toast.makeText(context, "Por favor verifique los datos ingresados, no pueden estar vacios", Toast.LENGTH_LONG).show()
                     }
+
+
+
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -306,6 +371,12 @@ fun AddPlacesScreen( userId: String?, onNavigateBackTo: () -> Unit ) {
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(text = "Agregar lugar")
             }
+
+            AsyncImage(
+                modifier = Modifier.width( 200.dp ),
+                model = image,
+                contentDescription = null
+            )
 
         }
     }//End Scaffold

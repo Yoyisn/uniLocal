@@ -115,7 +115,8 @@ fun Navigation (
             composable<RouteScreen.AddPlacesScreen> {
                 AddPlacesScreen(
                     userId = user["userId"] ?: "",
-                    onNavigateBackTo = { navController.popBackStack() }
+                    onNavigateBackTo = { navController.popBackStack() },
+                    context
                 )
             }
 
