@@ -19,7 +19,6 @@ fun Places(
 ) {
     val placesViewModel = LocalMainViewModel.current.placesViewModel
 
-    // cargar una vez cuando cambie userId
     LaunchedEffect(userId) {
         placesViewModel.getMyPlaces(userId)
     }

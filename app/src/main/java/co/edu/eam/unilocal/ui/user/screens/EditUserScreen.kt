@@ -130,7 +130,6 @@ fun EditUserScreen(onNavigateToEditProfile: () -> Unit) {
 
                         Toast.makeText(context, "Edited successfully", Toast.LENGTH_LONG).show()
 
-                        // *** Ahora vuelve a la pantalla anterior usando popBackStack ***
                         onNavigateToEditProfile()
 
                     } else {

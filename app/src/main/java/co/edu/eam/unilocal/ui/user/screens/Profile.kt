@@ -45,7 +45,6 @@ fun Profile(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        // FOTO DE PERFIL (si luego agregas photoUrl, aquí se reemplaza)
         AsyncImage(
             model = ImageRequest.Builder(context)
                 .data(defaultProfileImage)
@@ -63,7 +62,6 @@ fun Profile(
 
         Spacer(modifier = Modifier.height(25.dp))
 
-        // TARJETA DE INFORMACIÓN
         Card(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(
@@ -77,32 +75,30 @@ fun Profile(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
 
-                // NOMBRE
+
                 Text(
                     text = currentUser?.name ?: "Usuario sin nombre",
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold
                 )
 
-                // EMAIL
+
                 Text(
                     text = "Correo: ${currentUser?.email ?: "Sin correo"}",
                     style = MaterialTheme.typography.bodyLarge
                 )
 
-                // TELÉFONO
+
                 Text(
                     text = "Teléfono: ${currentUser?.phoneNumber ?: "Sin teléfono"}",
                     style = MaterialTheme.typography.bodyLarge
                 )
 
-                // ROL
                 Text(
                     text = "Rol: ${currentUser?.role?.name ?: "Sin rol"}",
                     style = MaterialTheme.typography.bodyLarge
                 )
 
-                // CIUDAD
                 val cityFormatted = currentUser?.city?.name
                     ?.lowercase()
                     ?.replaceFirstChar { it.uppercase() }

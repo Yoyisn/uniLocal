@@ -35,7 +35,6 @@ fun Navigation(
 
     CompositionLocalProvider(LocalMainViewModel provides mainViewModel) {
 
-        // ========== CONTROL AUTOMÁTICO DE SESIÓN ==========
         LaunchedEffect(currentUser) {
             if (currentUser == null) {
                 navController.navigate(RouteScreen.Info) {
@@ -80,14 +79,14 @@ fun Navigation(
             // ---------- LOGIN ----------
             composable<RouteScreen.LogIn> {
                 LoginFormScreen(
-                    onNavigateToHome = { _, _ -> /* LaunchedEffect maneja navegación */ }
+                    onNavigateToHome = { _, _ ->  }
                 )
             }
 
             // ---------- SIGN IN ----------
             composable<RouteScreen.SigIn> {
                 SigInFormScreen(
-                    onNavigateToHome = { /* LaunchedEffect maneja navegación */ }
+                    onNavigateToHome = {  }
                 )
             }
 
@@ -95,7 +94,7 @@ fun Navigation(
             composable<RouteScreen.HomeUser> {
 
                 val user = currentUser
-                if (user == null) return@composable   // 👈 evita crash
+                if (user == null) return@composable
 
                 HomeUserScreen(
                     userId = user.id,
@@ -116,7 +115,7 @@ fun Navigation(
             composable<RouteScreen.HomeAdmin> {
 
                 val user = currentUser
-                if (user == null) return@composable   // 👈 evita crash
+                if (user == null) return@composable
 
                 HomeAdminScreen()
             }
@@ -125,7 +124,7 @@ fun Navigation(
             composable<RouteScreen.AddPlacesScreen> {
 
                 val user = currentUser
-                if (user == null) return@composable   // 👈 evita crash
+                if (user == null) return@composable
 
                 AddPlacesScreen(
                     userId = user.id,

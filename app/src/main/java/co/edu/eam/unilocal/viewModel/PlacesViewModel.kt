@@ -18,21 +18,17 @@ import kotlinx.coroutines.tasks.await
 @RequiresApi(Build.VERSION_CODES.O)
 class PlacesViewModel : ViewModel() {
 
-    // LISTA GENERAL DE PLACES
     private val _places = MutableStateFlow<List<Place>>(emptyList())
     val places: StateFlow<List<Place>> = _places.asStateFlow()
 
-    // LISTA DE PLACES DEL USUARIO
     private val _myPlaces = MutableStateFlow<List<Place>>(emptyList())
     val myPlaces: StateFlow<List<Place>> = _myPlaces.asStateFlow()
 
     val db = Firebase.firestore
 
-    // RESULTADO DE OPERACIONES (CREAR, EDITAR, ETC.)
     private val _placeResult = MutableStateFlow<RequestResult<Place>?>(null)
     val placeResult: StateFlow<RequestResult<Place>?> = _placeResult.asStateFlow()
 
-    // PLACE SELECCIONADO ACTUALMENTE
     private val _currentPlace = MutableStateFlow<Place?>(null)
     val currentPlace: StateFlow<Place?> = _currentPlace.asStateFlow()
 
@@ -40,7 +36,6 @@ class PlacesViewModel : ViewModel() {
         getAll()
     }
 
-    // ==================== GET ALL ====================
     fun getAll() {
         viewModelScope.launch {
             _places.value = getAllFirebase()
@@ -55,7 +50,6 @@ class PlacesViewModel : ViewModel() {
         }
     }
 
-    // ==================== GET MY PLACES ====================
     fun getMyPlaces(ownerId: String) {
         viewModelScope.launch {
             _myPlaces.value = getMyPlacesFirebase(ownerId)
@@ -73,27 +67,22 @@ class PlacesViewModel : ViewModel() {
         }
     }
 
-    // ==================== CREATE PLACE ====================
     fun create(place: Place) {
         viewModelScope.launch {
             _placeResult.value = RequestResult.Loading
 
             try {
-                // Guardar en Firestore
+
                 val docRef = db.collection("places").add(place).await()
 
-                // Objeto con ID correcto
                 val savedPlace = place.copy(id = docRef.id)
 
-                // Actualizar listas locales
                 _places.value = _places.value + savedPlace
 
-                // SI EL PLACE ES DEL OWNER, AGREGARLO TAMBIÉN A SU LISTA
                 if (place.ownerId != null) {
                     _myPlaces.value = _myPlaces.value + savedPlace
                 }
 
-                // Resultado de éxito
                 _placeResult.value = RequestResult.Success(savedPlace)
 
             } catch (e: Exception) {
@@ -104,7 +93,6 @@ class PlacesViewModel : ViewModel() {
         }
     }
 
-    // ==================== HELPERS ====================
     fun findById(id: String): Place? {
         return _places.value.find { it.id == id }
     }
