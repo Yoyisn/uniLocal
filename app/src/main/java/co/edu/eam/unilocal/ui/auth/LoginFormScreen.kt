@@ -1,15 +1,8 @@
 package co.edu.eam.unilocal.ui.auth
 
 import android.util.Patterns
-import android.widget.Toast
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.rounded.Email
@@ -18,90 +11,77 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import co.edu.eam.uniLocal_project.R
 import co.edu.eam.unilocal.model.Role
+import co.edu.eam.unilocal.model.User
 import co.edu.eam.unilocal.ui.components.InputText
 import co.edu.eam.unilocal.ui.components.OperationResultHandler
 import co.edu.eam.unilocal.ui.navigation.LocalMainViewModel
+import co.edu.eam.unilocal.utils.RequestResult
 
 @Composable
-fun LoginFormScreen ( onNavigateToHome: (String, Role) -> Unit ) {
+fun LoginFormScreen(onNavigateToHome: (String, Role) -> Unit) {
 
     val usersViewModel = LocalMainViewModel.current.usersViewModel
-    val userResult by usersViewModel.userResult.collectAsState()
+
+    val userResult: RequestResult<User>? by usersViewModel.userResult.collectAsState(initial = null)
 
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
-    val context = LocalContext.current
 
     Surface {
-        Column (
+        Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterVertically),
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(50.dp)
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            modifier = Modifier.fillMaxSize().padding(50.dp)
         ) {
+
             Image(
                 modifier = Modifier.width(150.dp),
                 painter = painterResource(R.drawable.unilocallogo),
-                contentDescription = stringResource(R.string.image_txtInfoScreen)
-            )//End Image
+                contentDescription = null
+            )
 
             InputText(
                 value = email,
-                label = stringResource( R.string.txt_email ),
-                supportingText = stringResource(R.string.txt_email_error),
+                label = "Email",
+                supportingText = "Formato inválido",
                 onValueChange = { email = it },
                 onValidate = { email.isBlank() || !Patterns.EMAIL_ADDRESS.matcher(email).matches() },
                 icon = Icons.Rounded.Email
-            )//End InputText
+            )
 
             InputText(
                 value = password,
                 isPassword = true,
-                label = stringResource( R.string.txt_password ),
-                supportingText = stringResource(R.string.txt_password_error),
+                label = "Contraseña",
+                supportingText = "Debe tener mínimo 5 caracteres",
                 onValueChange = { password = it },
                 onValidate = { password.isBlank() || password.length < 5 },
                 icon = Icons.Rounded.KeyboardArrowRight
-            )//InputText
+            )
 
-            Button(
-                onClick = {
-                    usersViewModel.login(email, password)
-                },
-                //enabled = !isEmailError && !isPasswordError,
-                content = {
-                    Icon(
-                        imageVector = Icons.Outlined.Lock,
-                        contentDescription = stringResource( R.string.btn_logIn )
-                    )
-                    Spacer(modifier = Modifier.width(5.dp))
-                    Text( text = stringResource( R.string.btn_logIn ) )
-                }
-            )//End button
+            Button(onClick = { usersViewModel.login(email, password) }) {
+                Icon(imageVector = Icons.Outlined.Lock, contentDescription = null)
+                Spacer(Modifier.width(5.dp))
+                Text("Ingresar")
+            }
 
             OperationResultHandler(
                 result = userResult,
-                onSuccess = {
-                    onNavigateToHome(usersViewModel.currentUser.value!!.id, usersViewModel.currentUser.value!!.role)
-                    usersViewModel.resetOperationResult()
+                onSuccess = { user ->
+                    onNavigateToHome(user.id, user.role)
                 },
-                onFailure = { usersViewModel.resetOperationResult() }
+                onFailure = { }
             )
-
         }
     }
 }

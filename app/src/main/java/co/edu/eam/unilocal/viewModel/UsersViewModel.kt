@@ -2,8 +2,6 @@ package co.edu.eam.unilocal.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import co.edu.eam.unilocal.model.City
-import co.edu.eam.unilocal.model.Role
 import co.edu.eam.unilocal.model.User
 import co.edu.eam.unilocal.utils.RequestResult
 import com.google.firebase.Firebase
@@ -15,131 +13,96 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
-class UsersViewModel: ViewModel() {
-    private val _users = MutableStateFlow(emptyList<User>())
-    val users: StateFlow< List<User> > = _users.asStateFlow()
+class UsersViewModel : ViewModel() {
 
-    private val _userResult = MutableStateFlow<RequestResult?>(null)
-    val userResult: StateFlow<RequestResult?> = _userResult.asStateFlow()
+    // Lista de usuarios (si más adelante la usas)
+    private val _users = MutableStateFlow<RequestResult<List<User>>?>(null)
+    val users: StateFlow<RequestResult<List<User>>?> = _users.asStateFlow()
 
-    private val _currentUser = MutableStateFlow< User? >( null )
-    val currentUser: StateFlow< User? > = _currentUser.asStateFlow()
+    // Resultado de operaciones como login, register, etc.
+    private val _userResult = MutableStateFlow<RequestResult<User>?>(null)
+    val userResult: StateFlow<RequestResult<User>?> = _userResult.asStateFlow()
+
+    // Usuario actualmente logueado
+    private val _currentUser = MutableStateFlow<User?>(null)
+    val currentUser: StateFlow<User?> = _currentUser.asStateFlow()
 
     val db = Firebase.firestore
-
     val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
     init {
         loadUsers()
     }
 
-    fun create (user: User) {
+    // ========================= REGISTRO ===============================
+
+    fun create(user: User) {
         viewModelScope.launch {
             _userResult.value = RequestResult.Loading
-            _userResult.value = runCatching { createFirebase(user) }
-                .fold(
-                    onSuccess = { RequestResult.Success( "User created successfully" ) },
-                    onFailure = { RequestResult.Failure( it.message ?: "Error creating user" ) }
-                )// End fold
-        }//End viewModelScope.launch
-    }
 
-    private suspend fun createFirebase (user: User) {
-        val newUser = auth.createUserWithEmailAndPassword(user.email, user.password).await()
-        val uid = newUser.user?.uid ?: throw Exception ( "Error getting UID from user created" )
+            try {
+                val uid = createFirebase(user)
+                val userCopy = user.copy(id = uid, password = "")
 
-        val userCopy = user.copy(
-            id = uid,
-            password = ""
-        )
+                db.collection("users").document(uid).set(userCopy).await()
 
-        db.collection( "users" )
-            .document( uid )
-            .set( userCopy )
-            .await()
-    }
+                _currentUser.value = userCopy
+                _userResult.value = RequestResult.Success(userCopy)
 
-    /*
-    fun findById (id: String) {
-        viewModelScope.launch {
-            _userResult.value = RequestResult.Loading
-            _userResult.value = runCatching { findByIdFirebase(id) }
-                .fold(
-                    onSuccess = { RequestResult.Success( "User loged successfully" ) },
-                    onFailure = { RequestResult.Failure( it.message ?: "Error login user" ) }
-                )// End fold
-        }//End viewModelScope.launch
-    }
-    */
-
-    private suspend fun findByIdFirebase (id: String) {
-        val snapshot = db.collection("users").document(id).get().await()
-        val user = snapshot.toObject(User::class.java)?.apply {
-            this.id = snapshot.id
+            } catch (e: Exception) {
+                _userResult.value = RequestResult.Failure(
+                    e.message ?: "Error creating user"
+                )
+            }
         }
-
-        _currentUser.value = user
     }
 
-    fun login ( email: String, password: String ){
+    private suspend fun createFirebase(user: User): String {
+        val authResult = auth.createUserWithEmailAndPassword(
+            user.email,
+            user.password
+        ).await()
+
+        return authResult.user?.uid ?: throw Exception("No UID returned from Firebase")
+    }
+
+    // ========================= LOGIN ===============================
+
+    fun login(email: String, password: String) {
         viewModelScope.launch {
             _userResult.value = RequestResult.Loading
-            _userResult.value = runCatching { loginFirebase(email, password) }.fold(
-                    onSuccess = { RequestResult.Success( "User loged successfully" ) },
-                    onFailure = { RequestResult.Failure( "Error login user" ) }
-                )// End fold
-        }//End viewModelScope.launch
+
+            try {
+                val authResult = auth.signInWithEmailAndPassword(email, password).await()
+                val uid = authResult.user?.uid ?: throw Exception("User not found")
+
+                val snapshot = db.collection("users").document(uid).get().await()
+                val user = snapshot.toObject(User::class.java)?.copy(id = snapshot.id)
+                    ?: throw Exception("Error loading user")
+
+                _currentUser.value = user
+                _userResult.value = RequestResult.Success(user)
+
+            } catch (e: Exception) {
+                _userResult.value = RequestResult.Failure(
+                    e.message ?: "Error login user"
+                )
+            }
+        }
     }
 
-    private suspend fun loginFirebase ( email: String, password: String ){
-        val responseUser = auth.signInWithEmailAndPassword( email, password ).await()
-        val uid = responseUser.user?.uid ?: throw Exception ( "User not founded" )
-
-        findByIdFirebase(uid)
-    }
+    // ========================= LOGOUT ===============================
 
     fun logout() {
         auth.signOut()
         _currentUser.value = null
     }
 
-    fun resetOperationResult () {
+    fun resetOperationResult() {
         _userResult.value = null
     }
 
     fun loadUsers() {
-
-        /*
-        _users.value = listOf(
-            User(
-                id = "1",
-                name = "Admin",
-                role = Role.ADMIN,
-                city = City.BOGOTA,
-                phoneNumber = "3113509873",
-                email = "admin@gmail.com",
-                password = "123456",
-            ),
-            User(
-                id = "2",
-                name = "Carlos",
-                role = Role.USER,
-                city = City.MEDELLIN,
-                phoneNumber = "3113509873",
-                email = "carlos@gmail.com",
-                password = "123456",
-            ),
-            User(
-                id = "3",
-                name = "Jordy",
-                role = Role.USER,
-                city = City.MANIZALES,
-                phoneNumber = "3113509873",
-                email = "jordy@gmail.com",
-                password = "123456",
-            )
-        )//End listOf
-        */
-    }//End fun loadUsers
-
+        // Si en el futuro deseas cargar todos los usuarios, aquí se implementa.
+    }
 }

@@ -2,7 +2,7 @@ package co.edu.eam.unilocal.model
 
 enum class City (override val displayName: String) : DisplayableEnum {
     DEFAULT(" Default "),
-    ARMENIA("Medellin"),
+    ARMENIA("Armenia"),
     BOGOTA("Bogota"),
     MEDELLIN("Medellin"),
     PEREIRA("Pereira"),

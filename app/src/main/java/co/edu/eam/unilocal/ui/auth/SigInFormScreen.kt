@@ -153,7 +153,7 @@ fun SigInFormScreen ( onNavigateToHome: () -> Unit ) {
                         password = password
                         )
                         usersViewModel.create(user)
-                        Toast.makeText(context, "Successfully registered", Toast.LENGTH_LONG).show()
+                        //Toast.makeText(context, "Successfully registered", Toast.LENGTH_LONG).show()
                     } else {
                         Toast.makeText(context, "Something is wrong in your data, check it", Toast.LENGTH_LONG).show()
                     }
