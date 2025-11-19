@@ -1,5 +1,6 @@
 package co.edu.eam.unilocal.ui.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,7 +17,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import co.edu.eam.unilocal.model.Place
+import co.edu.eam.uniLocal_project.R
+import androidx.compose.foundation.layout.Arrangement
 
 @Composable
 fun PlaceCard( place: Place, onClick: (String) -> Unit ) {
@@ -58,9 +62,10 @@ fun PlaceCard( place: Place, onClick: (String) -> Unit ) {
                 )
 
                 Text(
-                    text = "", //place.phones.firstOrNull() ?:
+                    text = place.phones.ifBlank { "No phone" },
                     style = MaterialTheme.typography.bodySmall
                 )
+
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     place.schedules.chunked(2).forEach { pair ->
                         Row(
@@ -78,15 +83,27 @@ fun PlaceCard( place: Place, onClick: (String) -> Unit ) {
                 }
             }
 
-            // Imagen a la derecha
-            AsyncImage(
-                model = "",
-                contentDescription = place.title,
-                modifier = Modifier
-                    .size(90.dp)
-                    .clip(RoundedCornerShape(8.dp)),
-                contentScale = ContentScale.Crop
-            )
+            // Imagen a la derecha: usamos la primera imagen si existe, si no mostramos placeholder
+            val imgModel = place.images.firstOrNull().orEmpty()
+            if (imgModel.isNotBlank()) {
+                AsyncImage(
+                    model = imgModel,
+                    contentDescription = place.title,
+                    modifier = Modifier
+                        .size(90.dp)
+                        .clip(RoundedCornerShape(8.dp)),
+                    contentScale = ContentScale.Crop
+                )
+            } else {
+                // placeholder local (ajusta si tienes otro drawable)
+                Image(
+                    painter = painterResource(R.drawable.unilocallogo),
+                    contentDescription = "placeholder",
+                    modifier = Modifier
+                        .size(90.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                )
+            }
         }
     }
 }
