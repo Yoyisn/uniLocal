@@ -1,6 +1,5 @@
 package co.edu.eam.unilocal.ui.user.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
@@ -13,9 +12,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import co.edu.eam.uniLocal_project.R
 import co.edu.eam.unilocal.ui.navigation.LocalMainViewModel
 
@@ -26,30 +29,41 @@ fun Profile(
     val usersViewModel = LocalMainViewModel.current.usersViewModel
     val currentUser = usersViewModel.currentUser.collectAsState().value
 
+    val context = LocalContext.current
+
+    val defaultProfileImage = R.drawable.profile
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(
-                top = 150.dp,   // 👈 ESTE ES EL FIX PARA QUE NO SE CORTE LA IMAGEN
+                top = 120.dp,
                 start = 20.dp,
                 end = 20.dp,
                 bottom = 20.dp
             ),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        // *** FOTO DE PERFIL DEFAULT ***
-        Image(
-            painter = painterResource(id = R.drawable.profile),
+        // FOTO DE PERFIL (si luego agregas photoUrl, aquí se reemplaza)
+        AsyncImage(
+            model = ImageRequest.Builder(context)
+                .data(defaultProfileImage)
+                .crossfade(true)
+                .size(300)
+                .build(),
             contentDescription = "Foto de Perfil",
+            placeholder = painterResource(R.drawable.profile),
+            error = painterResource(R.drawable.profile),
             modifier = Modifier
-                .size(130.dp)
-                .clip(CircleShape)
+                .size(140.dp)
+                .clip(CircleShape),
+            contentScale = ContentScale.Crop
         )
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(25.dp))
 
-        // *** CARD CON INFORMACIÓN DEL USUARIO ***
+        // TARJETA DE INFORMACIÓN
         Card(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(
@@ -59,8 +73,8 @@ fun Profile(
         ) {
 
             Column(
-                modifier = Modifier.padding(20.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
+                modifier = Modifier.padding(22.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
 
                 // NOMBRE
@@ -88,7 +102,7 @@ fun Profile(
                     style = MaterialTheme.typography.bodyLarge
                 )
 
-                // CIUDAD FORMATEADA
+                // CIUDAD
                 val cityFormatted = currentUser?.city?.name
                     ?.lowercase()
                     ?.replaceFirstChar { it.uppercase() }
